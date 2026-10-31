@@ -1,0 +1,31 @@
+{
+  "name": "sulajh-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sulajh AI — Event-driven AI teammate for Paytm merchant settlement & chargeback resolution",
+  "workspaces": [
+    "apps/web",
+    "apps/api",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @sulajh/api\" \"npm run dev -w @sulajh/web\"",
+    "build": "npm run build -w @sulajh/shared && npm run build -w @sulajh/api && npm run build -w @sulajh/web",
+    "build:shared": "npm run build -w @sulajh/shared",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "vitest run",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "prettier": "^3.4.0",
+    "concurrently": "^9.1.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
