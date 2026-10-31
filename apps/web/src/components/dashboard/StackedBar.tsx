@@ -112,3 +112,4 @@ export const StackedBar: React.FC<StackedBarProps> = ({
     </div>
   );
 };
+

@@ -150,6 +150,13 @@ export default function DemoControl() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <button
+              onClick={() => navigate('/dashboard')}
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-blue-400"
+            >
+              <span>Merchant Dashboard</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+            <button
               onClick={() => navigate('/chat')}
               className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-sky-300"
             >

@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": "ea51a483-25ad-4df7-8f48-f203b3b094dc",
+      "role": "merchant",
+      "name": "Piyush Agrawal",
+      "email": "piyush@foodplaza.in",
+      "phone": "+919876545223",
+      "active": true,
+      "created_at": "2026-10-31T06:17:49.704Z",
+      "customPassword": "Password123!"
+    }
+  ],
+  "merchants": [
+    {
+      "id": "1d12b6d2-a546-4118-9d65-6f406733ba2b",
+      "user_id": "ea51a483-25ad-4df7-8f48-f203b3b094dc",
+      "business_name": "Piyush's Food Plaza",
+      "language": "hinglish",
+      "bank_last4": "5223",
+      "risk_flag": false,
+      "phone_masked": "XXXX-XX5223",
+      "category": "Food and Beverage",
+      "created_at": "2026-10-31T06:17:49.704Z"
+    }
+  ],
+  "passwords": {
+    "piyush@foodplaza.in": "Password123!",
+    "9876545223": "Password123!"
+  }
+}

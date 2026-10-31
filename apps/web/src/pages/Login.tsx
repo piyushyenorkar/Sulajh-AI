@@ -77,7 +77,7 @@ export default function Login() {
           setPendingUserId(res.userId);
         } else {
           if (res.user?.role === 'merchant') {
-            navigate('/chat');
+            navigate('/dashboard');
           } else {
             navigate('/ops');
           }
@@ -109,7 +109,7 @@ export default function Login() {
       });
 
       if (res.ok) {
-        navigate('/chat');
+        navigate('/dashboard');
       } else {
         setError(res.error?.message || 'Account registration failed.');
       }
@@ -149,7 +149,7 @@ export default function Login() {
     try {
       const res = await api.verifyOtp(phone, otp);
       if (res.ok) {
-        navigate('/chat');
+        navigate('/dashboard');
       } else {
         setError(res.error?.message || 'Invalid or expired OTP code.');
       }
