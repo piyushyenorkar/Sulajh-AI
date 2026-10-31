@@ -82,20 +82,23 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    // Test fixtures use a locally signed token; production requests are always
-    // verified with Supabase so token revocation and account disablement apply.
-    if (process.env.NODE_ENV === 'test') {
+    // 1. Check if token is a locally signed JWT (used by seed users, demo sessions, and staff)
+    try {
       const decoded = jwt.verify(token, getJwtSecret(), {
         issuer: JWT_ISSUER,
         audience: JWT_AUDIENCE,
       }) as AuthPayload;
       const user = db.getUserById(decoded.userId);
-      if (!user || !user.active) throw new Error('Inactive user');
-      req.auth = decoded;
-      next();
-      return;
+      if (user && user.active) {
+        req.auth = decoded;
+        next();
+        return;
+      }
+    } catch {
+      // If locally signed verification fails or user not in memory, proceed to Supabase check
     }
 
+    // 2. Otherwise verify via Supabase Auth session
     const admin = createAdminClient();
     const { data: authData, error: authError } = await admin.auth.getUser(token);
     if (authError || !authData.user) throw new Error('Invalid Supabase session');

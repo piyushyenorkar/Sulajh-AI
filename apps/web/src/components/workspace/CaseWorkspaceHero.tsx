@@ -12,12 +12,15 @@ import {
   PhoneCall, 
   CheckCheck, 
   ArrowLeft,
-  X
+  X,
+  MessageSquare,
+  FileText
 } from 'lucide-react';
 import { Meter } from './Meter';
 import { JourneyMap } from './JourneyMap';
 import { CaseTimeline } from './CaseTimeline';
 import { MerchantAssetCard } from './MerchantAssetCard';
+import { FullMerchantChatView } from './FullMerchantChatView';
 import { OpsTicket } from '../../data/opsConsoleData';
 
 export interface CaseWorkspaceHeroProps {
@@ -35,7 +38,7 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
   onApproveSuccess,
   onEscalate,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'overview' | 'settlement' | 'documents' | 'activity'>('overview');
+  const [activeSubTab, setActiveSubTab] = useState<'overview' | 'chat' | 'settlement' | 'documents' | 'activity'>('overview');
   const [isApproved, setIsApproved] = useState(ticket.status === 'resolved');
   const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
   const [totpCode, setTotpCode] = useState('');
@@ -126,56 +129,87 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
             {ticket.ticketNumber} · {ticket.merchantName}
           </h1>
 
-          {/* Sub-tabs pills (Mirrors Overview / Asset 1 / Documents / Activity) */}
+          {/* Sub-tabs pills (Mirrors Overview / Merchant Chat / Settlement / Documents / Activity) */}
           <div className="flex flex-wrap items-center gap-2 mt-4">
+            {/* Tab 1: Overview */}
             <button
               type="button"
               onClick={() => setActiveSubTab('overview')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
                 activeSubTab === 'overview'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
               }`}
             >
               Overview
             </button>
+
+            {/* Tab 2: Settlement 1 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('settlement')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
                 activeSubTab === 'settlement'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
               }`}
             >
-              Settlement 1
+              <span>Settlement</span>
+              <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
+                activeSubTab === 'settlement' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'
+              }`}>
+                1
+              </span>
             </button>
+
+            {/* Tab 3: Documents 2 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('documents')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
                 activeSubTab === 'documents'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
               }`}
             >
               <span>Documents</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeSubTab === 'documents' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                activeSubTab === 'documents' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'
               }`}>
                 2
               </span>
             </button>
+
+            {/* Tab 4: Activity */}
             <button
               type="button"
               onClick={() => setActiveSubTab('activity')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
                 activeSubTab === 'activity'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
               }`}
             >
               Activity
+            </button>
+
+            {/* Tab 5: Merchant Chat with count chip */}
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('chat')}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                activeSubTab === 'chat'
+                  ? 'bg-[#12141A] text-white shadow-xs'
+                  : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-violet-500" />
+              <span>Merchant Chat</span>
+              <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
+                activeSubTab === 'chat' ? 'bg-white/20 text-white' : 'bg-purple-100 text-[#6D5BD0]'
+              }`}>
+                {ticket.chatHistory?.length || 6}
+              </span>
             </button>
           </div>
         </div>
@@ -251,53 +285,70 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
         </div>
       </div>
 
-      {/* ─── 3-COLUMN WORKSPACE GRID (EQUIPFLOW HERO CASE LAYOUT) ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
-        {/* Column 1 (4 cols): Settlement Journey Route Map */}
-        <div className="lg:col-span-4 flex flex-col">
-          <JourneyMap
-            merchantName={ticket.merchantName}
-            merchantPhoneMasked="+91 98200 ••••4"
-            bankName={ticket.bankName}
-            accountLast4={ticket.accountLast4}
-            openedTime="Today 8:15 AM"
-            merchantNote={ticket.merchantQuery}
-            merchantNoteEn={ticket.merchantQueryEn}
-            currentStepIndex={isApproved ? 3 : 2}
-          />
-        </div>
+      {/* ─── CONDITIONAL VIEW: FULL MERCHANT CHAT vs 3-COLUMN WORKSPACE ─── */}
+      {activeSubTab === 'chat' ? (
+        /* Full Merchant Chat Thread View */
+        <FullMerchantChatView
+          ticket={ticket}
+          onBackToOverview={() => setActiveSubTab('overview')}
+          onSendMessage={(msg) => {
+            if (onApproveSuccess) {
+              onApproveSuccess(`Message dispatched to ${ticket.merchantName} via WhatsApp & Soundbox.`);
+            }
+          }}
+        />
+      ) : (
+        /* 3-Column Workspace Grid (EquipFlow Hero Layout) - Exact Same Smaller Height (570px) with 1.5px Internal Scroll */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          {/* Column 1 (4 cols): Settlement Journey Route Map */}
+          <div className="lg:col-span-4 h-[570px] max-h-[570px] flex flex-col overflow-hidden">
+            <JourneyMap
+              merchantName={ticket.merchantName}
+              merchantPhoneMasked="+91 98200 ••••4"
+              bankName={ticket.bankName}
+              accountLast4={ticket.accountLast4}
+              openedTime="Today 8:15 AM"
+              merchantNote={ticket.merchantQuery || "Mera kal ka settlement abhi tak nahi aaya, ₹4,735.54 pending dikha raha hai."}
+              merchantNoteEn={ticket.merchantQueryEn || "Yesterday's payout has not arrived yet, ₹4,735.54 is showing pending."}
+              currentStepIndex={isApproved ? 3 : 2}
+              isApproved={isApproved}
+              onOpenFullChat={() => setActiveSubTab('chat')}
+            />
+          </div>
 
-        {/* Column 2 (4 cols): Progress Timeline Ledger & Reply Composer */}
-        <div className="lg:col-span-4 flex flex-col">
-          <CaseTimeline
-            amount={ticket.amount}
-            grossAmount={ticket.amount + 114.46}
-            commission={97.00}
-            gst={17.46}
-            accountLast4={ticket.accountLast4}
-            onSendReply={(reply) => {
-              if (onApproveSuccess) {
-                onApproveSuccess(`Reply dispatched to ${ticket.merchantName} via WhatsApp & Soundbox.`);
-              }
-            }}
-          />
-        </div>
+          {/* Column 2 (4 cols): Progress Timeline Ledger & Reply Composer */}
+          <div className="lg:col-span-4 h-[570px] max-h-[570px] flex flex-col overflow-hidden">
+            <CaseTimeline
+              amount={ticket.amount}
+              grossAmount={ticket.amount + 114.46}
+              commission={97.00}
+              gst={17.46}
+              accountLast4={ticket.accountLast4}
+              isApproved={isApproved}
+              onSendReply={(reply) => {
+                if (onApproveSuccess) {
+                  onApproveSuccess(`Reply dispatched to ${ticket.merchantName} via WhatsApp & Soundbox.`);
+                }
+              }}
+            />
+          </div>
 
-        {/* Column 3 (4 cols): Merchant On File + Checklist */}
-        <div className="lg:col-span-4 flex flex-col">
-          <MerchantAssetCard
-            merchantName={ticket.merchantName}
-            merchantId={ticket.merchantId}
-            category={ticket.issueType === 'settlement_failed' ? 'Kirana / Retail' : 'Electronics'}
-            openDisputesCount={ticket.issueType === 'chargeback' ? 2 : 1}
-            failedPayoutsCount={ticket.status === 'resolved' ? 0 : 1}
-            riskFlag="Clean (Tier 1)"
-            accountLast4={ticket.accountLast4}
-            amount={ticket.amount}
-          />
+          {/* Column 3 (4 cols): Merchant On File + Checklist */}
+          <div className="lg:col-span-4 h-[570px] max-h-[570px] flex flex-col overflow-hidden">
+            <MerchantAssetCard
+              merchantName={ticket.merchantName}
+              merchantId={ticket.merchantId}
+              category={ticket.issueType === 'settlement_failed' ? 'Kirana / Retail' : 'Electronics'}
+              openDisputesCount={ticket.issueType === 'chargeback' ? 2 : 1}
+              failedPayoutsCount={ticket.status === 'resolved' ? 0 : 1}
+              riskFlag="Clean (Tier 1)"
+              accountLast4={ticket.accountLast4}
+              amount={ticket.amount}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ─── 2FA TOTP MODAL (FOR HIGH VALUE MANAGER APPROVALS) ─── */}
       {showTwoFactorModal && (

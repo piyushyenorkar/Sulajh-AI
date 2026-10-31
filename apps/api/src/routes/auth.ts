@@ -139,7 +139,7 @@ async function authenticate(email: string, password: string): Promise<{ user: Us
       if (user.role === 'merchant') {
         merchant = db.getMerchants().find((m) => m.user_id === user!.id);
         if (!merchant) {
-          merchant = {
+          const newMerchant: Merchant = {
             id: `merch-${user.id}`,
             user_id: user.id,
             business_name: `${user.name}'s Store`,
@@ -148,9 +148,9 @@ async function authenticate(email: string, password: string): Promise<{ user: Us
             risk_flag: false,
             phone_masked: user.phone ? `XXXX-XX${user.phone.slice(-4)}` : 'XXXX-XX4821',
             category: 'Grocery / Kirana',
-            created_at: new Date().toISOString(),
           };
-          db.getMerchants().push(merchant);
+          merchant = newMerchant;
+          db.getMerchants().push(newMerchant);
         }
       }
       return { user, merchant };
@@ -365,7 +365,6 @@ authRouter.post('/signup', authThrottle, async (req: Request, res: Response) => 
       risk_flag: false,
       phone_masked: `XXXX-XX${normalizedPhone.slice(-4)}`,
       category: category || 'Grocery / Kirana',
-      created_at: new Date().toISOString(),
     };
 
     hydrateProfile(user, merchant);

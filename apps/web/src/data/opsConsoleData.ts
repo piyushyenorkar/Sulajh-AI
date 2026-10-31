@@ -1,3 +1,24 @@
+export interface CaseChatMessage {
+  id: string;
+  sender: 'merchant' | 'ai' | 'agent';
+  senderName: string;
+  text: string;
+  timestamp: string;
+  channel?: 'soundbox' | 'whatsapp' | 'app';
+  voiceAudioUrl?: string;
+  voiceDuration?: string;
+  attachment?: {
+    name: string;
+    type: 'invoice' | 'receipt' | 'image' | 'pdf';
+    size: string;
+  };
+  proofTrail?: {
+    toolName: string;
+    ruleRef?: string;
+    confidence: number;
+  };
+}
+
 export interface OpsTicket {
   id: string;
   ticketNumber: string;
@@ -13,6 +34,10 @@ export interface OpsTicket {
   openedAt: string;
   bankName: string;
   accountLast4: string;
+  settlementId?: string;
+  merchantQuery?: string;
+  merchantQueryEn?: string;
+  chatHistory?: CaseChatMessage[];
   aiPreInvestigation: {
     rootCause: string;
     portalsCrossChecked: string[];
@@ -103,6 +128,66 @@ export const OPS_TICKETS: OpsTicket[] = [
     openedAt: '10:45 AM',
     bankName: 'HDFC Bank',
     accountLast4: '4821',
+    merchantQuery: 'Mera kal ka settlement abhi tak nahi aaya, ₹4,735.54 pending dikha raha hai.',
+    merchantQueryEn: 'Yesterday payout has not arrived yet, ₹4,735.54 is showing pending.',
+    chatHistory: [
+      {
+        id: 'msg-1',
+        sender: 'merchant',
+        senderName: 'Ramesh Gupta',
+        text: 'Mera kal ka settlement abhi tak nahi aaya, ₹4,735.54 pending dikha raha hai.',
+        timestamp: '10:45 AM',
+        channel: 'soundbox',
+        voiceAudioUrl: 'voice_audio_01.mp3',
+        voiceDuration: '0:12'
+      },
+      {
+        id: 'msg-2',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Namaste Ramesh ji! Maine live gateway check kiya hai. Aapka ₹4,735.54 ka payout bank IFSC code change (HDFC branch merger) ke kaaran reject hua tha. Updated IFSC confirm karne ke baad payout re-initiation process shuru ho chuka hai.',
+        timestamp: '10:45 AM',
+        proofTrail: {
+          toolName: 'check_settlement_status',
+          ruleRef: 'RBI/2026/04-IFSC-MERGER',
+          confidence: 99.4
+        }
+      },
+      {
+        id: 'msg-3',
+        sender: 'merchant',
+        senderName: 'Ramesh Gupta',
+        text: 'Branch merge hone se IFSC badal gaya tha, naya IFSC HDFC0000482 hai.',
+        timestamp: '10:46 AM',
+        channel: 'whatsapp'
+      },
+      {
+        id: 'msg-4',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Ji bilkul! HDFC0000482 RBI master record se verify ho chuka hai aur ledger balance (Gross ₹4,850 - MDR ₹97 - GST ₹17.46 = ₹4,735.54) match kar raha hai. Humne L1 settlement officer ke desk pe instant approval pack ready kar diya hai.',
+        timestamp: '10:46 AM',
+        proofTrail: {
+          toolName: 'verify_ifsc_merge',
+          confidence: 99.8
+        }
+      },
+      {
+        id: 'msg-5',
+        sender: 'merchant',
+        senderName: 'Ramesh Gupta',
+        text: 'Theek hai, paisa account me aate hi soundbox par bol dega na?',
+        timestamp: '10:47 AM',
+        channel: 'whatsapp'
+      },
+      {
+        id: 'msg-6',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Haan Ramesh ji! Jaise hi officer approve karenge, IMPS rail se payout release hote hi aapke Paytm Soundbox par turant bolkar confirm kar diya jaayega.',
+        timestamp: '10:47 AM'
+      }
+    ],
     aiPreInvestigation: {
       rootCause: 'Beneficiary bank rejected transaction: IFSC code changed due to HDFC branch merger (RBI Circular 2026/04).',
       portalsCrossChecked: ['HDFC Corporate API', 'NPCI IMPS Switch', 'Paytm Settlement Ledger'],
@@ -133,6 +218,71 @@ export const OPS_TICKETS: OpsTicket[] = [
     openedAt: '10:15 AM',
     bankName: 'ICICI Bank',
     accountLast4: '1092',
+    merchantQuery: 'Customer dispute aaya hai 8500 ka, proof submit karo aur mera settlement clear karo.',
+    merchantQueryEn: 'Customer dispute of 8500 has arrived, submit proof and clear my settlement.',
+    chatHistory: [
+      {
+        id: 'msg-p1',
+        sender: 'merchant',
+        senderName: 'Priya Sharma',
+        text: 'Customer dispute aaya hai 8500 ka, proof submit karo aur mera kal ka settlement clear karo.',
+        timestamp: '10:15 AM',
+        channel: 'soundbox',
+        voiceAudioUrl: 'voice_audio_02.mp3',
+        voiceDuration: '0:14'
+      },
+      {
+        id: 'msg-p2',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Namaste Priya ji! Order #DEL-4412 ke liye cardholder ne ₹8,500 ka chargeback raise kiya hai claiming non-delivery. Kya aapke paas courier dispatch receipt ya customer delivery OTP sign copy hai?',
+        timestamp: '10:15 AM',
+        proofTrail: {
+          toolName: 'defend_chargeback',
+          ruleRef: 'NPCI-CHARGEBACK-EVIDENCE-CHALLAN-V2',
+          confidence: 98.8
+        }
+      },
+      {
+        id: 'msg-p3',
+        sender: 'merchant',
+        senderName: 'Priya Sharma',
+        text: 'Haan BlueDart courier se bheja tha package. Ye signed delivery challan aur tax invoice upload kar rahi hoon.',
+        timestamp: '10:16 AM',
+        channel: 'whatsapp',
+        attachment: {
+          name: 'BlueDart_AWB_9982310_Signed_POD.pdf',
+          type: 'pdf',
+          size: '1.4 MB'
+        }
+      },
+      {
+        id: 'msg-p4',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Dhanyawad! BlueDart AWB #9982310 authenticate ho chuka hai. Customer ka OTP signature valid hai. Maine counter-evidence NPCI portal par stage kar diya hai. Dispute defend hone ke sath hi ₹8,500 ka payout L1 officer approval queue mein daal diya gaya hai.',
+        timestamp: '10:16 AM',
+        proofTrail: {
+          toolName: 'defend_chargeback',
+          confidence: 99.1
+        }
+      },
+      {
+        id: 'msg-p5',
+        sender: 'merchant',
+        senderName: 'Priya Sharma',
+        text: 'Ye kab tak account me aa jayega?',
+        timestamp: '10:17 AM',
+        channel: 'whatsapp'
+      },
+      {
+        id: 'msg-p6',
+        sender: 'ai',
+        senderName: 'Sulajh AI',
+        text: 'Aapka case abhi L1 Frontline Desk par hai. Officer ke 1-click verify karte hi IMPS rail se instant transfer shuru ho jaayega aur WhatsApp pe UTR message receive hoga.',
+        timestamp: '10:17 AM'
+      }
+    ],
     aiPreInvestigation: {
       rootCause: 'Cardholder filed chargeback via issuing bank claiming item not received for Order #DEL-4412.',
       portalsCrossChecked: ['BlueDart Courier API', 'Paytm PG Gateway', 'Merchant Soundbox Log'],

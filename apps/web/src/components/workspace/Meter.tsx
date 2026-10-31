@@ -3,23 +3,28 @@ import React from 'react';
 export interface MeterProps {
   label: string;
   value: string;
-  percent: number; // 0 to 100
+  percent?: number; // 0 to 100
+  pct?: number; // alias for percent
   variant?: 'blue' | 'orange' | 'green' | 'red' | 'violet';
   leftCaption?: string;
   rightCaption?: string;
   isOverLimit?: boolean;
+  widthClass?: string;
 }
 
 export const Meter: React.FC<MeterProps> = ({
   label,
   value,
   percent,
+  pct,
   variant = 'blue',
   leftCaption,
   rightCaption,
   isOverLimit = false,
+  widthClass = 'min-w-[210px] sm:min-w-[240px]',
 }) => {
-  const clampedPercent = Math.min(Math.max(percent, 0), 100);
+  const actualPercent = percent ?? pct ?? 0;
+  const clampedPercent = Math.min(Math.max(actualPercent, 0), 100);
 
   // Gradient selection matching the EquipFlow reference
   let gradientClass = 'bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-400';
@@ -34,7 +39,7 @@ export const Meter: React.FC<MeterProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-1.5 min-w-[210px] sm:min-w-[240px]">
+    <div className={`flex flex-col gap-1.5 ${widthClass}`}>
       {/* Top Header: Label & Display Value */}
       <div className="flex items-baseline justify-between gap-3">
         <span className="text-xs font-semibold text-slate-500 tracking-tight">

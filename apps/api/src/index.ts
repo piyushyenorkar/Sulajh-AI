@@ -24,7 +24,21 @@ assertAuthConfiguration();
 // ─── Global middleware ───────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps, curl, or same-origin requests)
+      if (!origin) return callback(null, true);
+      if (
+        !process.env.CORS_ORIGIN ||
+        process.env.CORS_ORIGIN === '*' ||
+        process.env.CORS_ORIGIN === origin ||
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   }),
 );
@@ -66,3 +80,4 @@ app.listen(PORT, () => {
 });
 
 export { app };
+export default app;

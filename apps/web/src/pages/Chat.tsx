@@ -319,12 +319,44 @@ export default function Chat() {
         };
         setMessages((prev) => [...prev, agentMsg]);
       } else {
-        const fallbackText =
-          language === 'hi'
-            ? 'आपके ₹4,735.54 पेआउट को HDFC विलय नीति के तहत स्वायत्तता से फिर से रूट कर दिया गया है। UTR 10 मिनट में जारी होगा।'
-            : language === 'hinglish'
-            ? 'Aapke ₹4,735.54 payout ko HDFC merger rule ke mutabik automatically re-route kar diya gaya hai. Payout 10 minute mein credit hoga.'
-            : 'Your pending payout of ₹4,735.54 has been verified against HDFC bank branch merger records and auto-cleared under ₹5,000 autonomous policy limits.';
+        const lower = text.toLowerCase();
+        let fallbackText = '';
+        let fallbackActions = ['Bank routing confirmed', 'Autonomous policy trigger executed'];
+
+        if (lower.includes('dispute') || lower.includes('chargeback') || lower.includes('8500') || lower.includes('proof') || lower.includes('विवाद')) {
+          fallbackText =
+            language === 'hi'
+              ? 'आपके कुल 5 विवाद खुले हैं। सर्वोच्च प्राथमिकता विवाद #dsp-1 (₹8,500) की बैंक समय सीमा 2 दिन में समाप्त हो रही है। बैंक को डिलीवरी साक्ष्य (हस्ताक्षरित रसीद) सफलतापूर्वक जमा कर दी गई है।'
+              : language === 'en'
+              ? 'You have 5 active disputes. Top priority dispute #dsp-1 (₹8,500) statutory bank deadline expires in 2 days. Signed delivery receipt proof has been submitted to the issuing bank for defense.'
+              : 'Aapke paas total 5 open disputes hain. Top priority dispute #dsp-1 (₹8,500) ki statutory bank deadline agle 2 din mein expire ho rahi hai. Signed delivery proof bank ko defend karne ke liye submit kar diya gaya hai.';
+          fallbackActions = ['Ran deadline-aware dispute priority planning', 'Submitted POD proof to bank'];
+        } else if (lower.includes('deduction') || lower.includes('kam kyun') || lower.includes('kam aaya') || lower.includes('hisaab') || lower.includes('lower') || lower.includes('कटौती')) {
+          fallbackText =
+            language === 'hi'
+              ? 'आपके ₹4,850 के सेटलमेंट का पूरा हिसाब:\n• कुल सकल बिक्री: ₹4,850\n• पेमेंट गेटवे MDR (2%): ₹97\n• 18% GST (MDR पर): ₹17.46\n• साउंडबॉक्स रेंटल: ₹0 (ऑफर)\n• शुद्ध जमा राशि: ₹4,735.54\nहिसाब पूरी तरह पारदर्शी और सही है।'
+              : language === 'en'
+              ? 'Here is your itemized deduction breakdown for Gross ₹4,850:\n• Gross Sales: ₹4,850\n• Payment Gateway MDR (2%): ₹97\n• 18% GST on MDR: ₹17.46\n• Soundbox Subscription: ₹0 (Promo waived)\n• Net Deposited: ₹4,735.54\nAll deductions strictly match the RBI & Paytm fee schedule.'
+              : 'Aapke ₹4,850 ke settlement ka pura hisaab:\n• Total Gross Sales: ₹4,850\n• Payment Gateway MDR (2%): ₹97\n• 18% GST: ₹17.46\n• Soundbox Subscription: ₹0\n• Net Bank Credit: ₹4,735.54\nYeh poora hisaab ledger tally ke saath match karta hai.';
+          fallbackActions = ['Reconciled settlement line items with bank gateway ledger', 'Tally verified'];
+        } else if (lower.includes('50000') || lower.includes('50,000') || lower.includes('hold') || lower.includes('review') || lower.includes('limit')) {
+          fallbackText =
+            language === 'hi'
+              ? 'इतनी बड़ी राशि (₹50,000) स्वायत्त फ्रंटलाइन सीमा (₹5,000) से अधिक है। सुरक्षा और RBI दिशानिर्देशों के तहत इसे ऑप्स मैनेजर के पास 2FA अनुमोदन के लिए भेजा गया है। अनुमोदन होते ही राशि जारी हो जाएगी।'
+              : language === 'en'
+              ? 'Payout of ₹50,000 exceeds the autonomous frontline limit (₹5,000). To protect your funds under RBI guidelines, this transaction has been secured and routed to the Ops Manager for 2FA review.'
+              : '₹50,000 ka payout autonomous policy threshold (₹5,000) se zyada hai. Security aur RBI rules ke mutabik yeh settlement lock karke Ops Manager ke 2FA approval queue mein bhej diya gaya hai.';
+          fallbackActions = ['Evaluated money policy: Request routed to Ops Manager', '2FA lock engaged'];
+        } else {
+          fallbackText =
+            language === 'hi'
+              ? 'आपके ₹4,735.54 पेआउट को HDFC विलय नीति के तहत स्वायत्तता से फिर से रूट कर दिया गया है। नया IFSC: HDFC0000482। UTR 15 मिनट में जारी होगा।'
+              : language === 'hinglish'
+              ? 'Aapke ₹4,735.54 payout ko HDFC branch merger rule ke mutabik automatically re-route kar diya gaya hai (Updated IFSC: HDFC0000482). Agle 15 minute mein credit ho jayega.'
+              : 'Your pending payout of ₹4,735.54 has been verified against HDFC bank branch merger records and auto-cleared under ₹5,000 autonomous policy limits (Updated IFSC: HDFC0000482).';
+          fallbackActions = ['Checked live settlement status', 'IFSC auto-remapped to HDFC0000482', 'Autonomous payout re-initiated'];
+        }
+
         setMessages((prev) => [
           ...prev,
           {
@@ -332,7 +364,7 @@ export default function Chat() {
             sender: 'agent',
             text: fallbackText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            actions: ['Bank routing confirmed', 'Autonomous policy trigger executed'],
+            actions: fallbackActions,
           },
         ]);
       }
@@ -618,33 +650,63 @@ export default function Chat() {
           </div>
         </header>
 
-        {/* ─── CASE PIPELINE STATUS STRIP (FIXED BELOW HEADER) ────────────────── */}
-        <div className="shrink-0 py-2 px-4 sm:px-6 bg-slate-50/90 border-b border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-600 gap-2 z-10">
+        {/* ─── SETTLEMENT CLEARING LIFECYCLE TRACKER (CLEAN STEPPER) ────────── */}
+        <div className="shrink-0 py-2.5 px-4 sm:px-6 bg-[#F8FAFC] border-b border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-2.5 z-10">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="font-semibold text-slate-800">Autonomous Settlement Engine:</span>
-            <span className="text-slate-500">Live UTR Clearing Sync</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="font-semibold text-xs text-slate-900">Clearing Status:</span>
+            <span className="text-slate-500 text-xs">Auto-Resolution Active (Hold: ₹4,735.54)</span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 text-[11px] font-medium text-slate-500">
-            <span className="flex items-center gap-1 text-emerald-700 font-bold">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              1. Log Ingested
-            </span>
-            <span className="text-slate-300">→</span>
-            <span className="flex items-center gap-1 text-emerald-700 font-bold">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              2. Bank Diagnostic
-            </span>
-            <span className="text-slate-300">→</span>
-            <span className="flex items-center gap-1 text-blue-700 font-bold">
-              <RefreshCw className="w-3 h-3 text-blue-600 animate-spin" />
-              3. Guardrail Check
-            </span>
-            <span className="text-slate-300">→</span>
-            <span className="text-slate-400">
-              4. Payout Dispatched
-            </span>
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
+            {/* Step 1: Bank Failure Logged */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-[11px] font-semibold shadow-2xs">
+              <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[9px] font-bold">✓</span>
+              <span>1. Failure Logged</span>
+            </div>
+
+            <span className="text-slate-300 text-xs">•</span>
+
+            {/* Step 2: IFSC Auto-Diagnosed */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-[11px] font-semibold shadow-2xs">
+              <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[9px] font-bold">✓</span>
+              <span>2. IFSC Auto-Remapped</span>
+            </div>
+
+            <span className="text-slate-300 text-xs">•</span>
+
+            {/* Step 3: Guardrail Check / Release */}
+            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold shadow-2xs ${
+              settleSuccess
+                ? 'bg-white border border-slate-200 text-slate-800'
+                : 'bg-blue-50 border border-blue-200 text-blue-800'
+            }`}>
+              <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                settleSuccess ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'
+              }`}>
+                {settleSuccess ? '✓' : '3'}
+              </span>
+              <span>{settleSuccess ? '3. Policy Cleared' : '3. Policy Verified (₹5k Limit)'}</span>
+            </div>
+
+            <span className="text-slate-300 text-xs">•</span>
+
+            {/* Step 4: Dispatched to Bank */}
+            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold shadow-2xs ${
+              settleSuccess
+                ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                : 'bg-slate-100 border border-slate-200/80 text-slate-400'
+            }`}>
+              <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                settleSuccess ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-600'
+              }`}>
+                {settleSuccess ? '✓' : '4'}
+              </span>
+              <span>{settleSuccess ? '4. Dispatched to Bank' : '4. Bank Credit Staged'}</span>
+            </div>
           </div>
         </div>
 

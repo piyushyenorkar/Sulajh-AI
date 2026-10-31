@@ -523,3 +523,4 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
     </div>
   );
 };
+
