@@ -1,0 +1,398 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sulajh AI Mesh</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;600;700&display=swap">
+<style>
+/* Layout: header and flow chips, one full-width layered map (people, backend, AI, data, Paytm), a side drawer for details, then role cards and shared rules. */
+:root{
+  --bg:#F5F7FC; --card:#FFFFFF; --ink:#0F1A36; --muted:#56637F; --line:#D6DCEC;
+  --band:#ECF0F9; --edge:#8792B0; --accent:#1F6FEB; --ai:#6D5BD0; --data:#5B6684;
+  --tint:#E6EEFD; --aitint:#EEEBFB;
+  --display:'Outfit',system-ui,sans-serif; --body:'DM Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1020; --card:#141B31; --ink:#E7ECF9; --muted:#9AA6C6; --line:#29335A;
+  --band:#0F1630; --edge:#5C6893; --accent:#6BA3FF; --ai:#A99BF7; --data:#8F9BBF;
+  --tint:#17274D; --aitint:#221F45; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0B1020; --card:#141B31; --ink:#E7ECF9; --muted:#9AA6C6; --line:#29335A;
+  --band:#0F1630; --edge:#5C6893; --accent:#6BA3FF; --ai:#A99BF7; --data:#8F9BBF;
+  --tint:#17274D; --aitint:#221F45; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0 0 10px}
+.lede{color:var(--muted);max-width:72ch;margin:10px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{font:500 14px var(--body);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#0B1020}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0B1020}}
+.hint{font-size:13px;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:16px;height:12px;border-radius:3px;border:2px solid var(--accent);background:var(--card)}
+.sw.ai{border-color:var(--ai)} .sw.data{border-color:var(--data)} .sw.ext{border-style:dashed;border-color:var(--data)}
+.sw.audit{height:0;border:0;border-top:2px dashed var(--edge);border-radius:0;width:20px}
+.mapbox{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+svg.map{display:block;min-width:900px;width:100%;height:auto}
+.band{fill:var(--band)} .bandlabel{font:600 11px var(--body);letter-spacing:.08em;fill:var(--muted);text-transform:uppercase}
+.node{cursor:pointer;outline:none} .node rect.box{fill:var(--card);stroke-width:1.4}
+.node:focus-visible rect.box,.node:hover rect.box{stroke-width:2.6}
+.node.surface rect.box{stroke:var(--accent)} .node.back rect.box{stroke:var(--edge)}
+.node.ai rect.box{stroke:var(--ai)} .node.data rect.box{stroke:var(--data)}
+.node.ext rect.box{stroke:var(--data);stroke-dasharray:6 4}
+.node.core rect.box{stroke-width:2.4} .node.core rect.tint{fill:var(--aitint)}
+.node .n1{font:600 13px var(--display);fill:var(--ink)} .node .n2{font:400 11.5px var(--body);fill:var(--muted)}
+.node.sel rect.box{stroke-width:3.2}
+.node.dim,.edge.dim{opacity:.16} .node.dim2{opacity:.4}
+.edge path{fill:none;stroke:var(--edge);stroke-width:1.3;opacity:.7}
+.edge.audit path{stroke-dasharray:3 4;opacity:.4}
+.edge.hot path{stroke:var(--accent);stroke-width:2.2;opacity:1}
+.badge rect{fill:var(--accent)} .badge text{font:600 11px var(--body);fill:#fff;text-anchor:middle}
+:root[data-theme="dark"] .badge text{fill:#0B1020}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .badge text{fill:#0B1020}}
+.panel{position:fixed;z-index:20;background:var(--card);border:1px solid var(--line);box-shadow:0 12px 40px rgba(10,20,50,.22);overflow:auto;padding:20px}
+@media (min-width:900px){.panel{top:16px;bottom:16px;right:16px;width:380px;border-radius:16px}}
+@media (max-width:899px){.panel{left:0;right:0;bottom:0;max-height:62vh;border-radius:16px 16px 0 0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}}
+.panel h3{font-family:var(--display);font-size:20px;margin:0 36px 4px 0}
+.tag{display:inline-block;font:500 11px var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin-right:6px}
+.close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer}
+.panel h4{font:600 12px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+.panel p{margin:0} .panel ul{margin:0;padding-left:18px} .panel li{margin:2px 0}
+.link{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:7px 0;color:var(--ink);font:400 14px var(--body);cursor:pointer}
+.link b{font-weight:600;color:var(--accent)} .link i{font-style:normal;color:var(--muted);font-size:13px}
+.arrow{font-family:var(--mono);color:var(--accent);flex:none}
+ol.steps{padding-left:0;list-style:none;margin:0;display:flex;flex-direction:column;gap:8px}
+ol.steps li{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start}
+.num{background:var(--accent);color:#fff;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;font:600 12px var(--body)}
+:root[data-theme="dark"] .num{color:#0B1020}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .num{color:#0B1020}}
+.who{font-size:13px;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card h3{font-family:var(--display);font-size:17px;margin:0 0 6px}
+.card dl{margin:0;font-size:14px} .card dt{font:600 11px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.card dd{margin:2px 0 0}
+.rules{margin:0;padding-left:20px;max-width:80ch} .rules li{margin:6px 0}
+@media (prefers-reduced-motion:no-preference){.node,.edge{transition:opacity .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Sulajh AI mesh</h1>
+    <p class="lede">Every screen, service, data store and handoff in one map. Click any box to see what it does, what goes in and out, and what it connects to. Pick a flow to watch one job travel through the whole system, step by step.</p>
+    <div class="chips" id="chips" role="group" aria-label="Flows"></div>
+    <p class="hint" id="hint">Showing all connections. Arrows point the way work moves; two-way arrows mean a request and its answer.</p>
+  </header>
+
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw"></i>People and screens</span>
+    <span><i class="sw ai"></i>AI agent and its tools</span>
+    <span><i class="sw data"></i>Shared database</span>
+    <span><i class="sw ext"></i>Simulated Paytm layer</span>
+    <span><i class="sw audit"></i>Audit writes</span>
+  </div>
+
+  <div class="mapbox"><svg class="map" id="map" viewBox="0 0 1200 736" role="img" aria-label="Layered map of Sulajh AI: five screens, backend services, the AI agent, the shared database and the simulated Paytm layer, with every handoff between them"></svg></div>
+
+  <section>
+    <h2>Who is who</h2>
+    <div class="cards" id="roles"></div>
+  </section>
+
+  <section>
+    <h2>Rules that hold everywhere</h2>
+    <ol class="rules">
+      <li>One shared record, the case. Every role sees the same case id and status through its own screen.</li>
+      <li>The agent is the hub. Merchants never message staff directly, and staff reply inside the case thread.</li>
+      <li>Humans act on decision packs the agent has already prepared, not on raw tickets.</li>
+      <li>Every handoff is a database row, an audit entry and a notification.</li>
+      <li>Money actions pass the policy check twice: when requested and when they run. Limits live in code.</li>
+      <li>The Admin never works cases. The audit log can be read and exported, never edited.</li>
+    </ol>
+  </section>
+</div>
+
+<aside class="panel" id="panel" hidden aria-live="polite"></aside>
+
+<script>
+(function(){
+  /* ---------- data ---------- */
+  var BY=function(i){return 14+i*146}, BOXH=76, BOXY=function(i){return BY(i)+34};
+  var rowNames=['People and screens','Backend','AI agent','Shared database','Paytm'];
+  var xs5=[40,270,500,730,960];
+  var nodes=[
+   {id:'merchant',row:0,x:xs5[0],w:200,type:'surface',n1:'Merchant app',n2:['Chat, voice, proof,','status, disputes'],chunk:7,
+    does:'The shop owner’s chat and dashboard. Asks about payouts, deductions and disputes, uploads proof, and verifies by OTP for large requests.',
+    login:'Phone number and OTP (fixed demo OTP in the prototype)',
+    inputs:['Typed or spoken question (Hinglish, Hindi, English)','Proof files for disputes','OTP for owner verification'],
+    outputs:['Reply with a “Why this answer” source panel','Case status strip and settlement card','Deduction breakdown','Disputes ranked by priority'],
+    rule:'Sees only their own data. Cannot approve anything.'},
+   {id:'l1',row:0,x:xs5[1],w:200,type:'surface',n1:'Ops Agent console (L1)',n2:['Queue and decision packs,','approve up to ₹25,000'],chunk:8,
+    does:'The queue of cases that need a human. Each decision pack already holds the cross-checks, so no other portal is needed.',
+    login:'Email and password',
+    inputs:['Decision packs from the agent','Cases reassigned by the Manager','Live queue updates'],
+    outputs:['Approve or reject with a reason, up to ₹25,000','Escalate to the Ops Manager','Replies to merchants in the case thread','Notes on the case'],
+    rule:'Cannot approve above ₹25,000, change policy, or bulk retry an incident.'},
+   {id:'mgr',row:0,x:xs5[2],w:200,type:'surface',n1:'Ops Manager console',n2:['Escalations, incidents,','team, outcomes'],chunk:'8 and 9',
+    does:'Decides high-value and flagged cases, owns incidents and bulk retries, reassigns work, flags wrong AI answers and reads the outcomes board.',
+    login:'Email, password and a one-time code',
+    inputs:['High-value packs and escalations','Incident records with linked cases','Outcome numbers'],
+    outputs:['Approve or reject any amount (owner verified for large requests)','Edit and send the incident broadcast','Bulk retry, with a policy check per payout','“AI was wrong” flags','Reassignments'],
+    rule:'Cannot edit users, roles or policy, and cannot touch audit entries.'},
+   {id:'adm',row:0,x:xs5[3],w:200,type:'surface',n1:'Admin console',n2:['Users, policy, tools,','audit, AI quality'],chunk:9,
+    does:'Controls who may act and by how much, and can prove what happened.',
+    login:'Email, password and a one-time code',
+    inputs:['AI-wrong flags from the Manager','Policy suggestions from the agent','The audit log'],
+    outputs:['New policy versions, shown as a diff first','User and role changes','Tool allow-list switches','Audit CSV export'],
+    rule:'Cannot work or approve cases, and cannot alter audit entries.'},
+   {id:'demo',row:0,x:xs5[4],w:200,type:'surface',n1:'Demo control panel',n2:['Fire events, reset data,','hidden route'],chunk:11,
+    does:'A hidden page for the live demo. Fires mock events and restores the seed data.',
+    login:'Hidden route, demo use only',
+    inputs:['Button presses'],
+    outputs:['Mock settlement and dispute events','Bank-down burst of 10 failed payouts','Reset to seed data'],
+    rule:'Not a product feature. Remove before any real use.'},
+   {id:'auth',row:1,x:xs5[0],w:200,type:'back',n1:'Auth and roles',n2:['OTP, JWT, role checks,','row-level security'],chunk:3,
+    does:'Signs people in and decides what each role may reach.',
+    inputs:['Phone and OTP','Email, password, one-time code'],
+    outputs:['Session token carrying role and merchant id','Role check on every route','Row-level security in the database'],
+    rule:'The merchant id always comes from the token, never from the request.'},
+   {id:'api',row:1,x:xs5[1],w:200,type:'back',n1:'Backend API',n2:['Express routes,','validation, rate limits'],chunk:6,
+    does:'The single entry point for every screen. Validates input, checks the role, and passes work to the case machinery and the agent.',
+    inputs:['Requests from all five screens','Audio for transcription'],
+    outputs:['Chat replies','Case, approval, incident, metrics, policy and audit responses','CSV export'],
+    rule:'Rate-limited, and every write is audit-logged.'},
+   {id:'sm',row:1,x:xs5[2],w:200,type:'back',n1:'Case state machine',n2:['11 states, legal moves','only, writes audit'],chunk:13,
+    does:'The only place a case can change state. Allows only the legal moves, checks the actor’s role, writes the audit entry and creates notifications.',
+    inputs:['Requests to change a case','Agent outcomes','Human decisions'],
+    outputs:['New case state','Approval rows and locks','Notification rows','Audit rows'],
+    rule:'Illegal moves are rejected with a clear error.'},
+   {id:'hand',row:1,x:xs5[3],w:200,type:'back',n1:'Handoffs and alerts',n2:['Routing by amount,','realtime to screens'],chunk:13,
+    does:'Routes each handoff to the right person by amount and flag, and pushes live updates to every screen.',
+    inputs:['State changes','Policy routing result'],
+    outputs:['Queue entries for L1 or the Manager','Bell counts and toasts','Live chat and status for the merchant'],
+    rule:'Up to the agent limit no human. Up to the L1 limit Ops Agents. Above it Ops Managers. Flags and daily-cap hits always need a human.'},
+   {id:'worker',row:1,x:xs5[4],w:200,type:'back',n1:'Event worker',n2:['Events to cases,','groups incidents'],chunk:11,
+    does:'Turns Paytm events into cases and groups many failures with one cause into a single incident.',
+    inputs:['Settlement failed or pending, dispute opened, due soon, status change'],
+    outputs:['One case per event, no duplicates','One incident with linked cases','One broadcast draft'],
+    rule:'Duplicate events create one case (unique source and external id).'},
+   {id:'voice',row:2,x:xs5[0],w:200,type:'ai',n1:'Voice (Sarvam)',n2:['Hindi speech to text,','text fallback'],chunk:10,
+    does:'Turns Hindi or Hinglish speech into text.',
+    inputs:['Audio from the mic button'],outputs:['Transcript','Text fallback if it fails'],
+    rule:'If voice fails the chat keeps working in text.'},
+   {id:'agent',row:2,x:xs5[1],w:200,type:'ai',n1:'Agent core (Groq)',n2:['Tool-calling loop:','read, act, check, repeat'],chunk:5,
+    does:'The AI teammate. Reads the case, picks a tool, checks the result and repeats until it can resolve, needs approval, or hands over.',
+    inputs:['Case, merchant profile, recent messages','Tool results','Admin policy'],
+    outputs:['Replies in the merchant’s language','Decision packs','Dispute and incident plans','Policy suggestions'],
+    rule:'States a number only after a tool returned it. Every figure has a source row.'},
+   {id:'policy',row:2,x:xs5[2],w:200,type:'ai core',n1:'Policy engine',n2:['Limits in code:','allow, approve, refuse'],chunk:4,
+    does:'Decides allow, needs approval or refuse for every money action, in code. The model cannot override it.',
+    inputs:['Actor, action, amount, merchant, case'],
+    outputs:['Result with reason and the role required','An audit row for every check'],
+    rule:'Runs twice: when requested and when the action runs. A chat claim of being the owner is not verification.'},
+   {id:'tools',row:2,x:xs5[3],w:200,type:'ai',n1:'Tools (12)',n2:['Allow-listed actions,','reconcile, plan, retry'],chunk:5,
+    does:'The twelve actions the agent may call: get_settlement_status, get_settlement_breakdown, reinitiate_payout, list_disputes, get_dispute, submit_dispute_action, request_evidence, search_knowledge, escalate_to_human, reconcile_settlement, plan_disputes, open_or_join_incident.',
+    inputs:['Arguments validated against the case’s merchant'],
+    outputs:['Status, breakdown, reconciliation tally','Dispute plan and evidence requests','Payout re-initiation and dispute action','Incident link and escalation'],
+    rule:'Money tools run only after a policy check.'},
+   {id:'rag',row:2,x:xs5[4],w:200,type:'ai',n1:'Knowledge search',n2:['Qdrant over Paytm','docs, with sources'],chunk:10,
+    does:'Finds grounded passages from Paytm settlement and dispute documents.',
+    inputs:['A question'],outputs:['Passages with source references'],
+    rule:'Answers that use a passage store its reference as a source.'},
+   {id:'d_cases',row:3,x:27,w:150,type:'data',n1:'Cases',n2:['messages, steps,','answer sources'],chunk:2,
+    does:'The shared case record and its history: cases, messages, agent_steps, answer_sources.',
+    inputs:['Agent steps and replies','Human replies'],outputs:['Timelines for every screen','The “Why this answer” panel'],rule:'Merchants read only their own rows (row-level security).'},
+   {id:'d_money',row:3,x:193,w:150,type:'data',n1:'Money data',n2:['settlements,','disputes, evidence'],chunk:2,
+    does:'Settlements, transactions, disputes and evidence. Dispute statuses: NEW, POD_UPLOAD, POD_REJECT, WON, LOST.',
+    inputs:['Seed script','Gateway writes'],outputs:['Data behind the simulated Paytm layer'],rule:'Simulated Paytm data. Label it on screen.'},
+   {id:'d_appr',row:3,x:359,w:150,type:'data',n1:'Approvals',n2:['approvals, locks,','owner checks'],chunk:'2 and 13',
+    does:'Decision packs and decisions, the lock that stops two approvers colliding, and owner verifications.',
+    inputs:['Packs from the state machine','Decisions'],outputs:['The pack shown to L1 or the Manager'],rule:'Only one person can hold a pack at a time.'},
+   {id:'d_pol',row:3,x:525,w:150,type:'data',n1:'Policy',n2:['limits, versions,','suggestions'],chunk:2,
+    does:'Approval limits, daily cap, incident threshold, max steps, and policy suggestions.',
+    inputs:['Admin edits (new version each time)','Agent suggestions'],outputs:['Limits read by the policy engine'],rule:'Edits create a new version; nothing is overwritten.'},
+   {id:'d_inc',row:3,x:691,w:150,type:'data',n1:'Incidents',n2:['events, incidents,','linked cases'],chunk:'2 and 11',
+    does:'Mock Paytm events and the incidents grouped from them.',
+    inputs:['Events from the Paytm layer and the demo panel'],outputs:['Work for the event worker'],rule:'Unique key on source and external id.'},
+   {id:'d_aud',row:3,x:857,w:150,type:'data',n1:'Audit log',n2:['append-only,','no edit, no delete'],chunk:2,
+    does:'Every step, tool call, policy decision and human decision. Written by every layer.',
+    inputs:['Writes from the agent, policy engine, state machine and API'],outputs:['Case traces and CSV export for the Admin'],rule:'Cannot be updated or deleted by anyone, including the Admin.'},
+   {id:'d_notif',row:3,x:1023,w:150,type:'data',n1:'People and alerts',n2:['users, alerts,','AI-wrong flags'],chunk:'2 and 13',
+    does:'Users and roles, notifications, owner verifications and AI-wrong feedback.',
+    inputs:['Handoff alerts','Manager flags','Admin user changes'],outputs:['Bell counts','Flags on the Admin quality page'],rule:'Everyone reads only their own notifications.'},
+   {id:'paytm',row:4,x:400,w:400,type:'ext',n1:'Paytm layer (simulated)',n2:['Same signatures as the real APIs; swap later'],chunk:4,
+    does:'Simulated settlements, disputes and events behind one gateway module. Replace each function with the real Paytm API later; nothing above it changes.',
+    inputs:['Tool calls: status, detail, re-initiate payout, dispute action'],outputs:['Results','Events (settlement failed, dispute opened, status change)'],
+    rule:'Real Paytm API fields are not confirmed; they are mocked and labelled.'}
+  ];
+  var edges=[
+   ['merchant','api','chat, voice, proof, OTP',1],['l1','api','decisions, replies',1],['mgr','api','decisions, retry, flags',1],['adm','api','users, policy, export',1],
+   ['demo','api','fire events, reset',0],['api','auth','check token and role',0],['api','sm','request a state change',0],['sm','hand','notify and route',0],
+   ['hand','merchant','live replies and status',0],['hand','l1','queue and bell',0],['hand','mgr','escalations and incidents',0],['hand','adm','flags and suggestions',0],
+   ['api','agent','run the case',0],['agent','sm','outcome / decision',1],['worker','sm','open a case',0],['agent','policy','check every money action',1],
+   ['agent','tools','call a tool / result',1],['tools','rag','search_knowledge',0],['api','voice','audio / transcript',1],['tools','paytm','gateway calls',1],
+   ['paytm','d_money','backed by seeded tables',1],['paytm','d_inc','events stored',0],['d_inc','worker','poll events / write incidents',1],['api','d_inc','store mock events',0],
+   ['agent','d_cases','steps, sources, replies',0],['sm','d_cases','case state',0],['sm','d_appr','approvals and locks',0],['policy','d_pol','read limits',1],
+   ['agent','d_pol','policy suggestions',0],['api','d_pol','new policy version',0],['hand','d_notif','alerts',0],['api','d_notif','AI-wrong flags, users',0],
+   ['agent','d_aud','audit',0,1],['policy','d_aud','audit',0,1],['sm','d_aud','audit',0,1],['api','d_aud','audit and export',0,1]
+  ].map(function(a){return {a:a[0],b:a[1],label:a[2],both:!!a[3],audit:!!a[4],id:a[0]+'|'+a[1]}});
+  var flows=[
+   {id:'f1',name:'Failed payout',blurb:'Merchant asks first. The agent resolves it alone, inside its limit.',steps:[
+    ['merchant','api','“Mera settlement nahi aaya” opens a case'],['api','sm','Case created: New'],['api','agent','Agent loop starts'],
+    ['agent','tools','get_settlement_status and reconcile_settlement'],['tools','paytm','Reads the failed payout and its reason'],
+    ['agent','policy','Within the agent limit, no flags: allow'],['agent','tools','reinitiate_payout'],['tools','paytm','Payout re-initiated'],
+    ['agent','d_cases','Steps and answer sources saved'],['agent','d_aud','Every step audited'],['agent','sm','Outcome: Resolved'],['sm','hand','Notify'],
+    ['hand','merchant','Reply with the “Why this answer” panel']]},
+   {id:'f2',name:'High-value request',blurb:'A large amount is refused, verified, then decided by a human.',steps:[
+    ['merchant','api','Asks for a large amount and says they are the owner'],['api','agent','Agent loop starts'],
+    ['agent','policy','Above the limit: refuse and name the human approver'],['merchant','api','Merchant verifies by OTP re-login'],
+    ['api','auth','OTP checked, owner verification saved'],['agent','sm','Decision pack ready: Needs approval'],['sm','d_appr','Approval row and lock'],
+    ['sm','hand','Route by amount'],['hand','mgr','Pack appears for the Ops Manager'],['mgr','api','Approve with a reason'],
+    ['api','sm','Decision recorded'],['sm','agent','Agent resumes'],['agent','policy','Second policy check'],['agent','tools','Action runs'],
+    ['tools','paytm','Payout released'],['sm','d_aud','Decision audited'],['hand','merchant','Merchant told who decided']]},
+   {id:'f3',name:'Dispute',blurb:'Paytm opens a dispute. Sulajh gathers proof and files the defence.',steps:[
+    ['paytm','d_inc','Dispute opened (NEW) stored as an event'],['d_inc','worker','Worker polls events'],['worker','sm','Case opened'],
+    ['sm','agent','Agent runs'],['agent','tools','plan_disputes and request_evidence'],['tools','paytm','Reads the merchant’s disputes'],
+    ['sm','hand','Case moves to Waiting'],['hand','merchant','Asks for proof, with a deadline'],['merchant','api','Merchant uploads proof'],
+    ['api','agent','Agent checks the proof'],['agent','policy','Limit check on defending'],['agent','tools','submit_dispute_action (defend)'],
+    ['tools','paytm','Defence filed'],['paytm','d_inc','Status change (POD_UPLOAD, WON, LOST) arrives as an event']]},
+   {id:'f4',name:'Bank incident',blurb:'Ten failures, one cause: one incident, one message, one bulk retry.',steps:[
+    ['demo','api','Fire: bank down, 10 failed payouts'],['api','d_inc','Ten failure events stored'],['d_inc','worker','Worker polls events'],
+    ['worker','d_inc','One incident with ten linked cases'],['worker','sm','Cases opened and linked'],['sm','hand','Route'],
+    ['hand','l1','L1 sees one grouped row'],['hand','mgr','Manager reviews incident and broadcast'],['hand','merchant','One message to every affected merchant'],
+    ['mgr','api','Manager runs bulk retry'],['api','agent','Agent runs the retries'],['agent','policy','Policy check for each payout'],
+    ['agent','tools','reinitiate_payout for each allowed one'],['tools','paytm','Payouts re-initiated']]},
+   {id:'f5',name:'Admin and governance',blurb:'Rules change safely, and wrong AI answers feed back.',steps:[
+    ['adm','api','Edits a limit: diff, then confirm'],['api','d_pol','New policy version saved'],['api','d_aud','Change audited'],
+    ['policy','d_pol','Policy engine reads the new version on the next run'],['mgr','api','Manager flags an AI answer as wrong'],
+    ['api','d_notif','AI-wrong feedback saved'],['hand','adm','Admin alerted'],['agent','d_pol','Policy suggestion from approval history'],
+    ['hand','adm','Admin reviews the suggestion'],['adm','api','Accept (opens the diff) or dismiss']]}
+  ];
+
+  /* ---------- geometry ---------- */
+  var byId={}; nodes.forEach(function(n){byId[n.id]=n});
+  var rowList=[[],[],[],[],[]];
+  nodes.forEach(function(n){rowList[n.row].push(n)});
+  rowList.forEach(function(r){r.sort(function(p,q){return p.x-q.x}); r.forEach(function(n,i){n.order=i})});
+  var cx=function(n){return n.x+n.w/2};
+  var uses={};
+  edges.forEach(function(e){
+    var s=byId[e.a],t=byId[e.b];
+    if(s.row===t.row){ if(Math.abs(s.order-t.order)===1){e.kind='h';return} e.kind='u';e.sa='b';e.ta='b'}
+    else if(s.row<t.row){e.kind='v';e.sa='b';e.ta='t'}
+    else{e.kind='v';e.sa='t';e.ta='b'}
+    (uses[e.a+'|'+e.sa]=uses[e.a+'|'+e.sa]||[]).push({e:e,w:'s',o:t});
+    (uses[e.b+'|'+e.ta]=uses[e.b+'|'+e.ta]||[]).push({e:e,w:'t',o:s});
+  });
+  Object.keys(uses).forEach(function(k){
+    var list=uses[k], n=byId[k.split('|')[0]];
+    list.sort(function(p,q){return cx(p.o)-cx(q.o)||p.e.id.length-q.e.id.length});
+    list.forEach(function(u,i){var x=n.x+14+(n.w-28)*(i+1)/(list.length+1); if(u.w==='s')u.e.sx=x; else u.e.tx=x});
+  });
+  function pathFor(e){
+    var s=byId[e.a],t=byId[e.b],y,d;
+    if(e.kind==='h'){var left=s.x<t.x; var x1=left?s.x+s.w:s.x, x2=left?t.x:t.x+t.w; y=BOXY(s.row)+BOXH/2; return 'M'+x1+' '+y+'H'+x2}
+    if(e.kind==='u'){y=BOXY(s.row)+BOXH; d=30+Math.abs(e.sx-e.tx)*0.02; return 'M'+e.sx+' '+y+'C'+e.sx+' '+(y+d)+','+e.tx+' '+(y+d)+','+e.tx+' '+y}
+    var ys=e.sa==='b'?BOXY(s.row)+BOXH:BOXY(s.row), yt=e.ta==='t'?BOXY(t.row):BOXY(t.row)+BOXH, c=Math.abs(yt-ys)*0.5, dir=yt>ys?1:-1;
+    return 'M'+e.sx+' '+ys+'C'+e.sx+' '+(ys+dir*c)+','+e.tx+' '+(yt-dir*c)+','+e.tx+' '+yt;
+  }
+
+  /* ---------- render ---------- */
+  var NS='http://www.w3.org/2000/svg', svg=document.getElementById('map');
+  function el(tag,attrs,parent){var x=document.createElementNS(NS,tag);for(var k in attrs){x.setAttribute(k,attrs[k])}if(parent)parent.appendChild(x);return x}
+  var defs=el('defs',{},svg);
+  function mk(id,cls){var m=el('marker',{id:id,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},defs);var p=el('path',{d:'M0 0L10 5L0 10z'},m);p.setAttribute('style','fill:var('+cls+')')}
+  mk('ar','--edge'); mk('arh','--accent');
+  for(var i=0;i<5;i++){
+    el('rect',{class:'band',x:12,y:BY(i),width:1176,height:122,rx:12},svg);
+    var lb=el('text',{class:'bandlabel',x:28,y:BY(i)+20},svg); lb.textContent=rowNames[i];
+  }
+  var edgeLayer=el('g',{},svg), nodeLayer=el('g',{},svg), badgeLayer=el('g',{},svg);
+  edges.forEach(function(e){
+    var g=el('g',{class:'edge'+(e.audit?' audit':'')},edgeLayer);
+    var p=el('path',{d:pathFor(e),'marker-end':'url(#ar)'},g); if(e.both)p.setAttribute('marker-start','url(#ar)');
+    e.g=g; e.p=p;
+  });
+  nodes.forEach(function(n){
+    var g=el('g',{class:'node '+n.type,tabindex:0,role:'button','aria-label':n.n1+'. '+n.n2.join(' ')+'. Press Enter for details.'},nodeLayer);
+    var h=n.row===4?56:BOXH, y=BOXY(n.row);
+    el('rect',{class:'box',x:n.x,y:y,width:n.w,height:h,rx:10},g);
+    if(n.type.indexOf('core')>-1) el('rect',{class:'tint',x:n.x+1,y:y+1,width:n.w-2,height:h-2,rx:9,opacity:.9},g);
+    var t1=el('text',{class:'n1',x:n.x+14,y:y+24},g); t1.textContent=n.n1;
+    n.n2.forEach(function(line,i){var t=el('text',{class:'n2',x:n.x+14,y:y+43+i*16},g); t.textContent=line});
+    g.addEventListener('click',function(ev){ev.stopPropagation();selectNode(n.id)});
+    g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectNode(n.id)}});
+    n.g=g;
+  });
+  svg.addEventListener('click',function(){clearAll()});
+
+  /* ---------- state and panel ---------- */
+  var panel=document.getElementById('panel'), hint=document.getElementById('hint'), chipsEl=document.getElementById('chips');
+  var state={mode:'none',id:null};
+  function findEdge(a,b){for(var i=0;i<edges.length;i++){var e=edges[i];if((e.a===a&&e.b===b)||(e.a===b&&e.b===a))return e}return null}
+  function setHot(e,on){e.g.classList.toggle('hot',on);e.p.setAttribute('marker-end',on?'url(#arh)':'url(#ar)');if(e.both)e.p.setAttribute('marker-start',on?'url(#arh)':'url(#ar)')}
+  function apply(hotEdges,hotNodes,sel,numbers){
+    badgeLayer.textContent='';
+    edges.forEach(function(e){var hot=hotEdges?hotEdges.indexOf(e)>-1:false;setHot(e,hot);e.g.classList.toggle('dim',!!hotEdges&&!hot)});
+    nodes.forEach(function(n){var on=!hotNodes||hotNodes.indexOf(n.id)>-1;n.g.classList.toggle('dim',!on);n.g.classList.toggle('sel',n.id===sel)});
+    if(numbers){Object.keys(numbers).forEach(function(k){
+      var e=edges.filter(function(x){return x.id===k})[0]; if(!e)return;
+      var len=e.p.getTotalLength(), pt=e.p.getPointAtLength(len/2), txt=numbers[k].join(','), w=Math.max(22,txt.length*7+14);
+      var b=el('g',{class:'badge'},badgeLayer); el('rect',{x:pt.x-w/2,y:pt.y-10,width:w,height:20,rx:10},b);
+      var tt=el('text',{x:pt.x,y:pt.y+4},b); tt.textContent=txt});}
+  }
+  function clearAll(){state={mode:'none',id:null};apply(null,null,null,null);panel.hidden=true;
+    hint.textContent='Showing all connections. Arrows point the way work moves; two-way arrows mean a request and its answer.';
+    [].forEach.call(chipsEl.children,function(c){c.setAttribute('aria-pressed',c.dataset.id==='all'?'true':'false')})}
+  function selectNode(id){
+    state={mode:'node',id:id};var n=byId[id], hot=edges.filter(function(e){return e.a===id||e.b===id}), nb=[id];
+    hot.forEach(function(e){nb.push(e.a===id?e.b:e.a)});
+    apply(hot,nb,id,null);
+    [].forEach.call(chipsEl.children,function(c){c.setAttribute('aria-pressed','false')});
+    hint.textContent=n.n1+': highlighted lines are its direct connections.';
+    var conn=hot.map(function(e){var out=e.a===id, other=byId[out?e.b:e.a];
+      var sym=e.both?'↔':(out?'→':'←');
+      return '<button class="link" data-go="'+other.id+'"><span class="arrow">'+sym+'</span><span><b>'+other.n1+'</b> <i>'+e.label+'</i></span></button>'}).join('');
+    var li=function(a){return '<ul>'+a.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'};
+    panel.innerHTML='<button class="close" aria-label="Close details">×</button><h3>'+n.n1+'</h3>'+
+      '<div><span class="tag">'+rowNames[n.row]+'</span><span class="tag">built in prompt '+n.chunk+'</span></div>'+
+      '<h4>What it does</h4><p>'+n.does+'</p>'+(n.login?'<h4>Who can log in</h4><p>'+n.login+'</p>':'')+
+      '<h4>Inputs</h4>'+li(n.inputs)+'<h4>Outputs</h4>'+li(n.outputs)+'<h4>Rule</h4><p>'+n.rule+'</p>'+
+      '<h4>Connected to ('+hot.length+')</h4>'+conn;
+    panel.hidden=false; panel.scrollTop=0;
+    panel.querySelector('.close').onclick=clearAll;
+    [].forEach.call(panel.querySelectorAll('[data-go]'),function(b){b.onclick=function(){selectNode(b.dataset.go)}});
+  }
+  function selectFlow(id){
+    var f=flows.filter(function(x){return x.id===id})[0]; state={mode:'flow',id:id};
+    var hot=[],nd=[],num={};
+    f.steps.forEach(function(s,i){var e=findEdge(s[0],s[1]); if(!e)return; if(hot.indexOf(e)<0)hot.push(e);(num[e.id]=num[e.id]||[]).push(i+1);
+      if(nd.indexOf(s[0])<0)nd.push(s[0]); if(nd.indexOf(s[1])<0)nd.push(s[1])});
+    apply(hot,nd,null,num);
+    [].forEach.call(chipsEl.children,function(c){c.setAttribute('aria-pressed',c.dataset.id===id?'true':'false')});
+    hint.textContent=f.name+': '+f.blurb+' Numbers on the lines show the step order.';
+    panel.innerHTML='<button class="close" aria-label="Close details">×</button><h3>'+f.name+'</h3><p class="who">'+f.blurb+'</p><h4>Steps</h4><ol class="steps">'+
+      f.steps.map(function(s,i){return '<li><span class="num">'+(i+1)+'</span><span><b>'+byId[s[0]].n1+'</b> <span class="arrow">→</span> <b>'+byId[s[1]].n1+'</b><br><span class="who">'+s[2]+'</span></span></li>'}).join('')+'</ol>';
+    panel.hidden=false; panel.scrollTop=0; panel.querySelector('.close').onclick=clearAll;
+  }
+  var all=document.createElement('button');all.className='chip';all.dataset.id='all';all.textContent='All connections';all.setAttribute('aria-pressed','true');all.onclick=clearAll;chipsEl.appendChild(all);
+  flows.forEach(function(f){var b=document.createElement('button');b.className='chip';b.dataset.id=f.id;b.textContent=f.name;b.setAttribute('aria-pressed','false');b.onclick=function(){selectFlow(f.id)};chipsEl.appendChild(b)});
+  document.addEventListener('keydown',function(ev){if(ev.key==='Escape')clearAll()});
+
+  /* ---------- role cards ---------- */
+  var roleHtml=['merchant','l1','mgr','adm','agent'].map(function(id){var n=byId[id];
+    return '<div class="card"><h3>'+n.n1.replace(' (L1)','')+'</h3><p class="who">'+n.does+'</p><dl>'+
+      (n.login?'<dt>Logs in with</dt><dd>'+n.login+'</dd>':'<dt>Runs as</dt><dd>System service. The key stays on the server.</dd>')+
+      '<dt>Hands work to</dt><dd>'+edges.filter(function(e){return e.a===id&&!e.audit&&byId[e.b].row<3||(e.both&&e.b===id&&byId[e.a].row<3)}).map(function(e){return byId[e.a===id?e.b:e.a].n1}).filter(function(v,i,a){return a.indexOf(v)===i}).join(', ')+'</dd>'+
+      '<dt>Limit</dt><dd>'+n.rule+'</dd></dl></div>'}).join('');
+  document.getElementById('roles').innerHTML=roleHtml;
+})();
+</script>
+
+</body></html>

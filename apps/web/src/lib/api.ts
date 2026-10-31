@@ -42,20 +42,18 @@ class ApiClient {
     localStorage.removeItem('sulajh_auth_session');
   }
 
-  /**
-   * Ensures an active merchant session is present (auto-signs in demo merchant if storage cleared)
-   */
+  /** Returns an existing merchant session. Authentication is never automatic. */
   public async ensureMerchantSession(): Promise<AuthSession | null> {
     const existing = this.getSession();
-    if (existing?.token) return existing;
+    if (existing?.token && existing.user.role === 'merchant') return existing;
+    return null;
+  }
 
-    try {
-      const res = await this.login('ramesh@kirana.in', 'Password123!');
-      if (res.token) {
-        return this.getSession();
-      }
-    } catch (e) {
-      console.warn('Auto-session initialization fallback failed:', e);
+  /** Returns an existing staff session. Authentication is never automatic. */
+  public async ensureOpsSession(): Promise<AuthSession | null> {
+    const existing = this.getSession();
+    if (existing?.token && (existing.user.role === 'ops_agent' || existing.user.role === 'ops_manager' || existing.user.role === 'admin')) {
+      return existing;
     }
     return null;
   }
@@ -156,7 +154,7 @@ class ApiClient {
   // ─── CHAT & VOICE ──────────────────────────────────────────────────────────
   public async sendChatMessage(text: string, caseId?: string, lang?: string) {
     if (!this.getSession()?.token) {
-      await this.ensureMerchantSession();
+      return { ok: false, error: { code: 'UNAUTHORIZED', message: 'Please sign in to continue.' } };
     }
 
     let res = await fetch(`${API_BASE}/chat`, {
@@ -168,18 +166,9 @@ class ApiClient {
       body: JSON.stringify({ text, case_id: caseId, lang }),
     });
 
-    // Auto-heal on expired or invalid token
+    // A stale token is removed; the user must explicitly sign in again.
     if (res.status === 401) {
       this.clearSession();
-      await this.ensureMerchantSession();
-      res = await fetch(`${API_BASE}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.getAuthHeader(),
-        },
-        body: JSON.stringify({ text, case_id: caseId, lang }),
-      });
     }
 
     const data = await res.json();

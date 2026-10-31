@@ -61,6 +61,63 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState(true);
 
+  const [quickLoading, setQuickLoading] = useState<string | null>(null);
+
+  // 1-Click Quick Demo Login for instant evaluation during presentations
+  const handleQuickDemoLogin = async (persona: 'merchant' | 'l1_ops' | 'ops_manager' | 'admin') => {
+    setError(null);
+    setQuickLoading(persona);
+    try {
+      if (persona === 'merchant') {
+        const res = await api.login('ramesh@kirana.in', 'Password123!');
+        if (res.ok) {
+          navigate('/dashboard');
+        } else {
+          setError(res.error?.message || 'Merchant login failed');
+        }
+      } else if (persona === 'l1_ops') {
+        const res = await api.login('vikram.ops@paytm.com', 'password123');
+        if (res.ok) {
+          navigate('/ops');
+        } else {
+          setError(res.error?.message || 'L1 Ops Agent login failed');
+        }
+      } else if (persona === 'ops_manager') {
+        const res = await api.login('neha.manager@paytm.com', 'password123');
+        if (res.ok && res.requires2FA) {
+          const faRes = await api.verifyStaff2FA(res.userId, '654321');
+          if (faRes.ok) {
+            navigate('/ops');
+          } else {
+            setError(faRes.error?.message || '2FA verification failed');
+          }
+        } else if (res.ok) {
+          navigate('/ops');
+        } else {
+          setError(res.error?.message || 'Ops Manager login failed');
+        }
+      } else if (persona === 'admin') {
+        const res = await api.login('piyush.admin@paytm.com', 'password123');
+        if (res.ok && res.requires2FA) {
+          const faRes = await api.verifyStaff2FA(res.userId, '654321');
+          if (faRes.ok) {
+            navigate('/admin');
+          } else {
+            setError(faRes.error?.message || '2FA verification failed');
+          }
+        } else if (res.ok) {
+          navigate('/admin');
+        } else {
+          setError(res.error?.message || 'Admin login failed');
+        }
+      }
+    } catch {
+      setError('Connection failed. Please retry.');
+    } finally {
+      setQuickLoading(null);
+    }
+  };
+
   // ─── HANDLERS ─────────────────────────────────────────────────────────────
 
   // 1. Standard Email + Password Sign In (Merchant or Staff)
@@ -169,7 +226,11 @@ export default function Login() {
     try {
       const res = await api.verifyStaff2FA(pendingUserId, twoFactorCode);
       if (res.ok) {
-        navigate('/ops');
+        if (res.user?.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/ops');
+        }
       } else {
         setError(res.error?.message || 'Invalid two-factor authentication code.');
       }
@@ -334,6 +395,8 @@ export default function Login() {
                   type="button"
                   onClick={() => {
                     setPortalRole('merchant');
+                    setEmail('ramesh@kirana.in');
+                    setPassword('Password123!');
                     setError(null);
                   }}
                   title="Merchant Desk"
@@ -350,6 +413,8 @@ export default function Login() {
                   type="button"
                   onClick={() => {
                     setPortalRole('staff');
+                    setEmail('vikram.ops@paytm.com');
+                    setPassword('password123');
                     setError(null);
                   }}
                   title="Paytm Ops & Risk Staff"
@@ -364,6 +429,82 @@ export default function Login() {
                 </button>
               </div>
 
+            </div>
+
+            {/* ─── QUICK DEMO PERSONA SWITCHER (JUDGES & 1-CLICK ACCESS) ─── */}
+            <div className="mb-3.5 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center justify-between mb-2 px-1">
+                <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                  <span>1-Click Role Access (Judges Demo)</span>
+                </span>
+                <span className="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full font-bold">Instant Login</span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  disabled={Boolean(quickLoading)}
+                  onClick={() => handleQuickDemoLogin('merchant')}
+                  className="p-2 rounded-xl bg-white border border-slate-200/90 hover:border-teal-400 hover:bg-teal-50/50 text-left transition flex flex-col justify-between group shadow-2xs cursor-pointer"
+                  title="Login as Ramesh Kumar (Kirana Owner)"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-[#0F766E] flex items-center gap-1">
+                      <Store className="w-3 h-3 text-[#14B8A6]" /> Kirana Merchant
+                    </span>
+                    {quickLoading === 'merchant' && <div className="w-3 h-3 border border-teal-500 border-t-transparent rounded-full animate-spin" />}
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Ramesh · ₹4,735 Pending</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={Boolean(quickLoading)}
+                  onClick={() => handleQuickDemoLogin('l1_ops')}
+                  className="p-2 rounded-xl bg-white border border-slate-200/90 hover:border-blue-400 hover:bg-blue-50/50 text-left transition flex flex-col justify-between group shadow-2xs cursor-pointer"
+                  title="Login as Vikram Singh (Paytm Care Frontline Agent)"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-700 flex items-center gap-1">
+                      <UserCheck className="w-3 h-3 text-blue-500" /> L1 Ops Agent
+                    </span>
+                    {quickLoading === 'l1_ops' && <div className="w-3 h-3 border border-blue-500 border-t-transparent rounded-full animate-spin" />}
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Vikram · 300 Tickets · ₹25k</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={Boolean(quickLoading)}
+                  onClick={() => handleQuickDemoLogin('ops_manager')}
+                  className="p-2 rounded-xl bg-white border border-slate-200/90 hover:border-violet-400 hover:bg-violet-50/50 text-left transition flex flex-col justify-between group shadow-2xs cursor-pointer"
+                  title="Login as Neha Gupta (Tier-2 Manager with 4-Eye Approval & 2FA)"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-violet-700 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3 text-violet-500" /> Ops Manager
+                    </span>
+                    {quickLoading === 'ops_manager' && <div className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />}
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Neha · 4-Eye Approval (2FA)</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={Boolean(quickLoading)}
+                  onClick={() => handleQuickDemoLogin('admin')}
+                  className="p-2 rounded-xl bg-white border border-slate-200/90 hover:border-slate-400 hover:bg-slate-100/70 text-left transition flex flex-col justify-between group shadow-2xs cursor-pointer"
+                  title="Login as Piyush Admin (Global Policy Thresholds & Audit Stream)"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-slate-950 flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-slate-700" /> System Admin
+                    </span>
+                    {quickLoading === 'admin' && <div className="w-3 h-3 border border-slate-700 border-t-transparent rounded-full animate-spin" />}
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Piyush · Guardrails & Risk</span>
+                </button>
+              </div>
             </div>
 
             {/* Error Notification Alert */}
@@ -851,12 +992,38 @@ export default function Login() {
               )}
 
               {/* CARD FOOTER */}
-              <div className="pt-3.5 mt-4 sm:mt-4.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+              <div className="pt-3 mt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#14B8A6]" />
                   <span>256-Bit SSL Protected</span>
                 </span>
                 <span>Paytm Enterprise Identity</span>
+              </div>
+
+              {/* DEMO CREDENTIALS QUICK REFERENCE */}
+              <div className="mt-2.5 pt-2 border-t border-slate-100/80 text-[11px] text-slate-500 space-y-1 bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/60">
+                <div className="flex items-center justify-between font-bold text-slate-700 text-[10px] uppercase tracking-wider mb-0.5">
+                  <span>Demo Credentials Sheet</span>
+                  <span className="text-teal-600 font-semibold lowercase">tap persona chip above for 1-click</span>
+                </div>
+                <div className="grid grid-cols-1 gap-1 text-[11px] font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 font-sans">L1 Ops:</span>
+                    <span className="text-slate-900 font-bold">vikram.ops@paytm.com / password123</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 font-sans">Ops Mgr:</span>
+                    <span className="text-slate-900 font-bold">neha.manager@paytm.com (2FA: 654321)</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 font-sans">Admin:</span>
+                    <span className="text-slate-900 font-bold">piyush.admin@paytm.com (2FA: 654321)</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 font-sans">Merchant:</span>
+                    <span className="text-slate-900 font-bold">ramesh@kirana.in / Password123!</span>
+                  </div>
+                </div>
               </div>
 
             </div>

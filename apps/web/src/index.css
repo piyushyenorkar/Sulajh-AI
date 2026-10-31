@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* ─── EquipFlow Workspace Design Tokens & Patterns ─── */
+.bg-hatched {
+  background-image: repeating-linear-gradient(45deg, #E5E7EB, #E5E7EB 3px, #F3F4F6 3px, #F3F4F6 6px);
+}
+.bg-hatched-orange {
+  background-image: repeating-linear-gradient(45deg, rgba(242, 83, 29, 0.15), rgba(242, 83, 29, 0.15) 3px, #F3F4F6 3px, #F3F4F6 6px);
+}
+.font-display {
+  font-family: 'Sora', 'Outfit', sans-serif;
+}
+.font-body {
+  font-family: 'Manrope', 'DM Sans', 'Inter', sans-serif;
+}
+
 /* ─── Standard Web Typography (Inter / System) & Design Tokens ─────────── */
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;

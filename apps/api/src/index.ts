@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { logger } from './lib/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { assertAuthConfiguration } from './middleware/auth.js';
 import { healthRouter } from './routes/health.js';
 import { authRouter } from './routes/auth.js';
 import { chatRouter } from './routes/chat.js';
@@ -17,6 +18,8 @@ import { mockEventsRouter } from './routes/mockEvents.js';
 import { voiceRouter } from './routes/voice.js';
 
 const app = express();
+
+assertAuthConfiguration();
 
 // ─── Global middleware ───────────────────────────────────────────────────────
 app.use(
