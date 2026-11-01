@@ -47,8 +47,12 @@ class ApiClient {
     const existing = this.getSession();
     if (existing?.token && existing.user.role === 'merchant') return existing;
     try {
-      const res = await this.login('ramesh@kirana.in', 'password123');
+      const res = await this.login('piyushyenorkar1@gmail.com', '123456');
       if (res.ok && res.token) {
+        return this.getSession();
+      }
+      const fallback = await this.login('ramesh@kirana.in', 'password123');
+      if (fallback.ok && fallback.token) {
         return this.getSession();
       }
     } catch {

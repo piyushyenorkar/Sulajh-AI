@@ -109,7 +109,39 @@ function sessionPayload(user: User, merchant?: Merchant) {
 }
 
 async function authenticate(email: string, password: string): Promise<{ user: User; merchant?: Merchant } | null> {
-  // 1. Try Supabase Auth first if configured
+  const cleanEmail = email.trim().toLowerCase();
+
+  // 1. Direct seed & local memory lookup first (handles piyushyenorkar1@gmail.com, piyushyenorkar02@gmail.com, ramesh@kirana.in, staff)
+  let user = db.getUserByEmail(cleanEmail);
+  if (!user) {
+    user = db.getUsers().find((u) => u.email?.toLowerCase() === cleanEmail);
+  }
+
+  // Aliases for Piyush demo accounts
+  if (!user && (cleanEmail === 'piyushyenorkar1@gmail.com' || cleanEmail === 'piyush@foodplaza.in')) {
+    user = db.getUserById('usr-m-1') || db.getUsers().find((u) => u.role === 'merchant');
+  }
+  if (!user && cleanEmail === 'piyushyenorkar02@gmail.com') {
+    user = db.getUserById('usr-piyush-staff') || db.getUserById('usr-ops-1');
+  }
+
+  if (user && user.active) {
+    const validCommonPasswords = ['password123', 'Password123!', 'admin123', 'paytm123', 'secret123', '123456'];
+    const isPasswordValid = validCommonPasswords.includes(password) || password.length >= 6;
+
+    if (isPasswordValid) {
+      let merchant: Merchant | undefined;
+      if (user.role === 'merchant') {
+        merchant = db.getMerchants().find((m) => m.user_id === user!.id);
+        if (!merchant) {
+          merchant = db.getMerchants().find((m) => m.id === 'merch-1') || db.getMerchants()[0];
+        }
+      }
+      return { user, merchant };
+    }
+  }
+
+  // 2. Try Supabase Auth if configured
   if (isSupabaseConfigured()) {
     try {
       const client = createUserClient();
@@ -120,40 +152,6 @@ async function authenticate(email: string, password: string): Promise<{ user: Us
       }
     } catch {
       // Continue to local seed & staff authentication
-    }
-  }
-
-  // 2. Pre-provisioned staff & seeded merchants fallback
-  const cleanEmail = email.trim().toLowerCase();
-  let user = db.getUserByEmail(cleanEmail);
-  if (!user) {
-    user = db.getUsers().find((u) => u.email?.toLowerCase() === cleanEmail);
-  }
-
-  if (user && user.active) {
-    const validCommonPasswords = ['password123', 'Password123!', 'admin123', 'paytm123', 'secret123'];
-    const isPasswordValid = validCommonPasswords.includes(password) || password.length >= 6;
-
-    if (isPasswordValid) {
-      let merchant: Merchant | undefined;
-      if (user.role === 'merchant') {
-        merchant = db.getMerchants().find((m) => m.user_id === user!.id);
-        if (!merchant) {
-          const newMerchant: Merchant = {
-            id: `merch-${user.id}`,
-            user_id: user.id,
-            business_name: `${user.name}'s Store`,
-            language: 'hinglish',
-            bank_last4: user.phone ? user.phone.slice(-4) : '4821',
-            risk_flag: false,
-            phone_masked: user.phone ? `XXXX-XX${user.phone.slice(-4)}` : 'XXXX-XX4821',
-            category: 'Grocery / Kirana',
-          };
-          merchant = newMerchant;
-          db.getMerchants().push(newMerchant);
-        }
-      }
-      return { user, merchant };
     }
   }
 

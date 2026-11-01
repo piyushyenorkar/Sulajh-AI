@@ -158,7 +158,14 @@ export class Database {
   }
 
   public getUserByEmail(email: string): User | undefined {
-    return this.state.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+    const clean = email.toLowerCase().trim();
+    if (clean === 'piyushyenorkar1@gmail.com' || clean === 'ramesh@kirana.in') {
+      return this.state.users.find((u) => u.email?.toLowerCase() === 'piyushyenorkar1@gmail.com' || u.id === 'usr-m-1');
+    }
+    if (clean === 'piyushyenorkar02@gmail.com') {
+      return this.state.users.find((u) => u.email?.toLowerCase() === 'piyushyenorkar02@gmail.com' || u.id === 'usr-piyush-staff');
+    }
+    return this.state.users.find((u) => u.email?.toLowerCase() === clean);
   }
 
   public getMerchants(): Merchant[] {
@@ -457,12 +464,13 @@ export class Database {
     const opsManager: User = { id: 'usr-mgr-1', role: 'ops_manager', name: 'Neha Gupta (Ops Manager)', email: 'neha.manager@paytm.com', phone: '+919999900002', active: true, created_at: new Date().toISOString() };
     const opsAgent: User = { id: 'usr-ops-1', role: 'ops_agent', name: 'Vikram Singh (Ops Agent)', email: 'vikram.ops@paytm.com', phone: '+919999900003', active: true, created_at: new Date().toISOString() };
     const systemAgent: User = { id: 'usr-sys-1', role: 'system_agent', name: 'Sulajh AI Engine', email: 'engine@sulajh.ai', active: true, created_at: new Date().toISOString() };
+    const piyushStaff: User = { id: 'usr-piyush-staff', role: 'ops_agent', name: 'Piyush Yenorkar (Staff)', email: 'piyushyenorkar02@gmail.com', phone: '+917498735223', active: true, created_at: new Date().toISOString() };
 
-    this.state.users.push(adminUser, opsManager, opsAgent, systemAgent);
+    this.state.users.push(adminUser, opsManager, opsAgent, systemAgent, piyushStaff);
 
     // 3. 8 Merchants
     const merchantConfigs = [
-      { id: 'merch-1', usrId: 'usr-m-1', name: 'Ramesh Kumar', biz: 'Ramesh Kirana Store', lang: 'hinglish' as const, bank: '4821', phone: '9876543210', email: 'ramesh@kirana.in', cat: 'Grocery / Kirana', risk: false },
+      { id: 'merch-1', usrId: 'usr-m-1', name: 'Piyush Yenorkar', biz: "Piyush's Food Plaza & Kirana", lang: 'hinglish' as const, bank: '5223', phone: '7498735223', email: 'piyushyenorkar1@gmail.com', cat: 'Grocery / Kirana', risk: false },
       { id: 'merch-2', usrId: 'usr-m-2', name: 'Priya Sharma', biz: 'Priya Ethnic Boutique', lang: 'hi' as const, bank: '1092', phone: '9811223344', email: 'priya@boutique.in', cat: 'Apparel / Fashion', risk: false },
       { id: 'merch-3', usrId: 'usr-m-3', name: 'Ganesh Patil', biz: 'Ganesh Electronics', lang: 'mr' as const, bank: '7734', phone: '9822334455', email: 'ganesh@electronics.in', cat: 'Electronics', risk: false },
       { id: 'merch-4', usrId: 'usr-m-4', name: 'Sunil Sharma', biz: 'Sharma Sweets & Cafe', lang: 'hi' as const, bank: '6612', phone: '9833445566', email: 'sunil@sharmasweets.in', cat: 'Food & Beverage', risk: false },

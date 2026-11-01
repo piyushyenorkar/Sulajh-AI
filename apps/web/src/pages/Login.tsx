@@ -36,10 +36,10 @@ export default function Login() {
   const [signupMethod, setSignupMethod] = useState<'mobile' | 'standard'>('mobile');
 
   // Form states
-  const [email, setEmail] = useState('ramesh@kirana.in');
-  const [password, setPassword] = useState('Password123!');
+  const [email, setEmail] = useState('piyushyenorkar1@gmail.com');
+  const [password, setPassword] = useState('123456');
   const [showPassword, setShowPassword] = useState(false);
-  const [phone, setPhone] = useState('9876543210');
+  const [phone, setPhone] = useState('7498735223');
   const [otp, setOtp] = useState('123456');
   const [otpSent, setOtpSent] = useState(false);
 
@@ -69,11 +69,13 @@ export default function Login() {
     setQuickLoading(persona);
     try {
       if (persona === 'merchant') {
-        const res = await api.login('ramesh@kirana.in', 'Password123!');
+        const res = await api.login('piyushyenorkar1@gmail.com', '123456');
         if (res.ok) {
           navigate('/dashboard');
         } else {
-          setError(res.error?.message || 'Merchant login failed');
+          const fallback = await api.login('ramesh@kirana.in', 'Password123!');
+          if (fallback.ok) navigate('/dashboard');
+          else setError(res.error?.message || 'Merchant login failed');
         }
       } else if (persona === 'l1_ops') {
         const res = await api.login('vikram.ops@paytm.com', 'password123');
@@ -454,7 +456,7 @@ export default function Login() {
                     </span>
                     {quickLoading === 'merchant' && <div className="w-3 h-3 border border-teal-500 border-t-transparent rounded-full animate-spin" />}
                   </div>
-                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Ramesh · ₹4,735 Pending</span>
+                  <span className="text-[10px] text-slate-500 mt-0.5 truncate">Piyush · ₹4,735 Pending</span>
                 </button>
 
                 <button
