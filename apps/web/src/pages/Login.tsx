@@ -329,6 +329,66 @@ export default function Login() {
             </span>
           </div>
 
+          {/* ─── 1-CLICK DEMO ACCESS FOR JUDGES (PLACED UNDER TRUST BADGES) ─── */}
+          <div className="p-3.5 rounded-2xl bg-white/90 border border-slate-200/90 shadow-xs mt-1">
+            <div className="flex items-center justify-between mb-2.5 px-0.5">
+              <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 uppercase">
+                <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span>1-Click Live Demo Access (Judges & Evaluators)</span>
+              </span>
+              <span className="text-[10px] text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full font-bold border border-teal-200/70">
+                Instant Login
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* 1. Merchant */}
+              <button
+                type="button"
+                disabled={Boolean(quickLoading)}
+                onClick={() => handleQuickDemoLogin('merchant')}
+                className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/90 hover:border-teal-400 hover:bg-teal-50/50 text-left transition-all duration-150 flex flex-col justify-between group cursor-pointer shadow-2xs hover:shadow-xs min-h-[64px]"
+                title="Instant Login as Merchant (Piyush)"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-[#0F766E] flex items-center gap-1.5">
+                    <Store className="w-4 h-4 text-[#14B8A6]" /> Kirana Merchant Hub
+                  </span>
+                  {quickLoading === 'merchant' ? (
+                    <div className="w-3.5 h-3.5 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0F766E] group-hover:translate-x-0.5 transition" />
+                  )}
+                </div>
+                <span className="text-[11px] text-slate-500 mt-1 truncate">
+                  Piyush · ₹4,735 Pending Payout · Soundbox
+                </span>
+              </button>
+
+              {/* 2. Admin & Ops Hub */}
+              <button
+                type="button"
+                disabled={Boolean(quickLoading)}
+                onClick={() => handleQuickDemoLogin('admin')}
+                className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/90 hover:border-indigo-400 hover:bg-indigo-50/50 text-left transition-all duration-150 flex flex-col justify-between group cursor-pointer shadow-2xs hover:shadow-xs min-h-[64px]"
+                title="Instant Login as Admin & Operations (Switch L1/L2/Admin inside)"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-indigo-600" /> Admin & Ops Hub
+                  </span>
+                  {quickLoading === 'admin' ? (
+                    <div className="w-3.5 h-3.5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-700 group-hover:translate-x-0.5 transition" />
+                  )}
+                </div>
+                <span className="text-[11px] text-slate-500 mt-1 truncate">
+                  Piyush Admin · L1 / L2 / Audit Console
+                </span>
+              </button>
+            </div>
+          </div>
+
         </div>
 
         {/* ─── RIGHT COLUMN: BALANCED, COMFORTABLE AUTH CONSOLE ─── */}
@@ -410,62 +470,6 @@ export default function Login() {
                 </button>
               </div>
 
-            </div>
-
-            {/* ─── QUICK DEMO PERSONA SWITCHER (JUDGES & 1-CLICK ACCESS) ─── */}
-            <div className="mb-4 p-3 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-              <div className="flex items-center justify-between mb-2.5 px-1">
-                <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                  <span>1-Click Role Access (Judges Demo)</span>
-                </span>
-                <span className="text-[10px] text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full font-bold border border-teal-200/60">
-                  Instant Access
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2.5">
-                {/* 1. Merchant */}
-                <button
-                  type="button"
-                  disabled={Boolean(quickLoading)}
-                  onClick={() => handleQuickDemoLogin('merchant')}
-                  className="p-3 rounded-xl bg-white border border-slate-200/90 hover:border-teal-400 hover:bg-teal-50/40 text-left transition-all duration-150 flex flex-col justify-between group shadow-2xs hover:shadow-xs cursor-pointer min-h-[64px]"
-                  title="Instant Login as Merchant (Piyush)"
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-[#0F766E] flex items-center gap-1.5">
-                      <Store className="w-4 h-4 text-[#14B8A6]" /> Kirana Merchant
-                    </span>
-                    {quickLoading === 'merchant' && (
-                      <div className="w-3.5 h-3.5 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-                    )}
-                  </div>
-                  <span className="text-[10px] text-slate-500 mt-1 truncate">
-                    Piyush · ₹4,735 Pending Payout
-                  </span>
-                </button>
-
-                {/* 2. Admin & Ops Hub */}
-                <button
-                  type="button"
-                  disabled={Boolean(quickLoading)}
-                  onClick={() => handleQuickDemoLogin('admin')}
-                  className="p-3 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-400 hover:bg-indigo-50/40 text-left transition-all duration-150 flex flex-col justify-between group shadow-2xs hover:shadow-xs cursor-pointer min-h-[64px]"
-                  title="Instant Login as Admin & Operations (Piyush Admin - Switch L1/L2/Admin inside)"
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-700 flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-indigo-600" /> Admin & Ops Hub
-                    </span>
-                    {quickLoading === 'admin' && (
-                      <div className="w-3.5 h-3.5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                    )}
-                  </div>
-                  <span className="text-[10px] text-slate-500 mt-1 truncate">
-                    Piyush Admin · L1 / L2 / Audit Access
-                  </span>
-                </button>
-              </div>
             </div>
 
             {/* Error Notification Alert */}
@@ -953,38 +957,12 @@ export default function Login() {
               )}
 
               {/* CARD FOOTER */}
-              <div className="pt-3 mt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+              <div className="pt-3 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#14B8A6]" />
                   <span>256-Bit SSL Protected</span>
                 </span>
                 <span>Paytm Enterprise Identity</span>
-              </div>
-
-              {/* DEMO CREDENTIALS QUICK REFERENCE */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100/80 text-[11px] text-slate-500 space-y-1 bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/60">
-                <div className="flex items-center justify-between font-bold text-slate-700 text-[10px] uppercase tracking-wider mb-0.5">
-                  <span>Demo Credentials Sheet</span>
-                  <span className="text-teal-600 font-semibold lowercase">tap persona chip above for 1-click</span>
-                </div>
-                <div className="grid grid-cols-1 gap-1 text-[11px] font-mono">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600 font-sans">L1 Ops:</span>
-                    <span className="text-slate-900 font-bold">vikram.ops@paytm.com / password123</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600 font-sans">Ops Mgr:</span>
-                    <span className="text-slate-900 font-bold">neha.manager@paytm.com (2FA: 654321)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600 font-sans">Admin:</span>
-                    <span className="text-slate-900 font-bold">piyush.admin@paytm.com (2FA: 654321)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600 font-sans">Merchant:</span>
-                    <span className="text-slate-900 font-bold">ramesh@kirana.in / Password123!</span>
-                  </div>
-                </div>
               </div>
 
             </div>
