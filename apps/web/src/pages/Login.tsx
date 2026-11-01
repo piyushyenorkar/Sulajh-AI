@@ -17,7 +17,6 @@ import {
   CheckCircle2,
   Radio,
   Receipt,
-  Volume2,
   QrCode
 } from 'lucide-react';
 import { api } from '../lib/api';
@@ -26,16 +25,10 @@ import { PaytmLogo } from '../components/PaytmLogo';
 export default function Login() {
   const navigate = useNavigate();
 
-  // Primary view tabs: 'signin' vs 'signup'
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-
-  // Sign In Portal role: 'merchant' vs 'staff' (Note: Staff cannot sign up)
   const [portalRole, setPortalRole] = useState<'merchant' | 'staff'>('merchant');
-
-  // Login method for merchants: 'password' (standard) vs 'otp'
   const [loginMethod, setLoginMethod] = useState<'password' | 'otp'>('password');
 
-  // Form states
   const [email, setEmail] = useState('piyushyenorkar1@gmail.com');
   const [password, setPassword] = useState('123456');
   const [showPassword, setShowPassword] = useState(false);
@@ -43,25 +36,21 @@ export default function Login() {
   const [otp, setOtp] = useState('123456');
   const [otpSent, setOtpSent] = useState(false);
 
-  // Sign up states (merchant only)
   const [signupName, setSignupName] = useState('Piyush Yenorkar');
   const [signupBusiness, setSignupBusiness] = useState("Piyush's Food Plaza & Kirana");
   const [signupEmail, setSignupEmail] = useState('piyushyenorkar1@gmail.com');
   const [signupPassword, setSignupPassword] = useState('123456');
   const [signupPhone, setSignupPhone] = useState('7498735223');
 
-  // Staff 2FA state
   const [twoFactorCode, setTwoFactorCode] = useState('654321');
   const [requires2FA, setRequires2FA] = useState(false);
   const [pendingUserId, setPendingUserId] = useState('');
 
-  // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState(true);
   const [quickLoading, setQuickLoading] = useState<string | null>(null);
 
-  // 1-Click Quick Demo Login for instant evaluation during presentations
   const handleQuickDemoLogin = async (persona: 'merchant' | 'admin') => {
     setError(null);
     setQuickLoading(persona);
@@ -97,12 +86,10 @@ export default function Login() {
     }
   };
 
-  // ─── AUTH HANDLERS ────────────────────────────────────────────────────────
   const handleEmailPasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       const res = await api.login(email.trim(), password);
       if (res.ok) {
@@ -111,7 +98,6 @@ export default function Login() {
           setPendingUserId(res.userId);
           return;
         }
-
         const role = res.user?.role;
         if (role === 'merchant') {
           navigate('/dashboard');
@@ -225,11 +211,11 @@ export default function Login() {
   return (
     <div className="w-full h-screen overflow-hidden relative font-sans antialiased selection:bg-[#84CC16]/20 selection:text-slate-900 bg-[#E7F8EC]">
       
-      {/* ─── SEAMLESS FULL-VIEWPORT ROOM BACKGROUND (SHARED ACROSS ENTIRE WIDTH) ─── */}
+      {/* ─── SEAMLESS FULL-VIEWPORT ROOM BACKGROUND ─── */}
       <div className="absolute top-0 inset-x-0 h-[64%] bg-gradient-to-b from-[#E7F8EC] via-[#D8F3DF] to-[#C7EED0] pointer-events-none z-0" />
       <div className="absolute bottom-0 inset-x-0 h-[36%] bg-[#1A4530] shadow-inner pointer-events-none z-0" />
 
-      {/* ─── TOP APP HEADER BAR (NO NPCI TAG, CLEAN LOGO BADGE) ─── */}
+      {/* ─── HEADER ─── */}
       <header className="absolute top-0 inset-x-0 z-30 px-6 sm:px-8 py-4 flex items-center justify-between pointer-events-none">
         <div className="pointer-events-auto flex items-center gap-3">
           <div className="px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-emerald-200/90 flex items-center gap-2 shadow-xs">
@@ -240,15 +226,13 @@ export default function Login() {
         </div>
       </header>
 
-      {/* ─── MAIN 2-COLUMN VIEWPORT FLUSH TO MARGINS ─── */}
+      {/* ─── MAIN 2-COLUMN LAYOUT ─── */}
       <main className="w-full h-full grid grid-cols-1 lg:grid-cols-12 relative z-10">
         
-        {/* ══════════════════════════════════════════════════════════════════════
-            LEFT SIDE: 3D MERCHANT ROOM SCENE + AUTHENTIC WALL FRAMES
-           ══════════════════════════════════════════════════════════════════════ */}
+        {/* ═══ LEFT SIDE: 3D MERCHANT ROOM SCENE ═══ */}
         <section className="hidden lg:flex lg:col-span-7 h-full relative overflow-hidden flex-col justify-between p-8 pt-18 select-none">
           
-          {/* Background Image Hook (User can drop merchant-3d.png into public/) */}
+          {/* Background Image Hook */}
           <img 
             src="/merchant-3d.png" 
             alt="Merchant Workspace" 
@@ -258,69 +242,51 @@ export default function Login() {
             }}
           />
 
-          {/* ─── 3 PROPER WALL HANGING FRAMES (PICTURE FRAMES ON THE WALL) ─── */}
-          <div className="relative z-10 flex items-start gap-4 max-w-xl">
+          {/* ─── 3 CLEAN WALL PICTURE FRAMES ─── */}
+          <div className="relative z-10 flex items-start gap-5 max-w-xl">
             
-            {/* Wall Frame 1 */}
-            <div className="flex flex-col items-center group">
-              {/* Brass Wall Nail & Wire */}
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-700 border border-amber-900 shadow-xs mb-0.5" />
-              <div className="w-8 h-3 border-t-2 border-slate-600/50 -mt-1.5" />
-              {/* Picture Frame Molding */}
-              <div className="p-1.5 bg-[#3B2516] rounded-xl shadow-[0_12px_24px_-4px_rgba(20,50,30,0.28)] border border-[#26170D] hover:-translate-y-1 transition duration-200 cursor-default">
-                <div className="bg-[#FAFDF9] rounded-lg p-2.5 flex items-center gap-2.5 border border-emerald-900/10 min-w-[155px]">
-                  <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <Zap className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-extrabold text-slate-800 leading-tight">Instant Clearing</p>
-                    <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded inline-block mt-0.5">T+0 Diagnostics</span>
-                  </div>
+            {/* Frame 1 */}
+            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Zap className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Instant Clearing</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">T+0 Diagnostics</p>
                 </div>
               </div>
             </div>
 
-            {/* Wall Frame 2 */}
-            <div className="flex flex-col items-center group">
-              {/* Brass Wall Nail & Wire */}
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-700 border border-amber-900 shadow-xs mb-0.5" />
-              <div className="w-8 h-3 border-t-2 border-slate-600/50 -mt-1.5" />
-              {/* Picture Frame Molding */}
-              <div className="p-1.5 bg-[#3B2516] rounded-xl shadow-[0_12px_24px_-4px_rgba(20,50,30,0.28)] border border-[#26170D] hover:-translate-y-1 transition duration-200 cursor-default">
-                <div className="bg-[#FAFDF9] rounded-lg p-2.5 flex items-center gap-2.5 border border-emerald-900/10 min-w-[165px]">
-                  <div className="w-6 h-6 rounded-md bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <Receipt className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-extrabold text-slate-800 leading-tight">Deduction Reconcile</p>
-                    <span className="text-[9px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.2 rounded inline-block mt-0.5">100% MDR Audit</span>
-                  </div>
+            {/* Frame 2 */}
+            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+                  <Receipt className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Deduction Reconcile</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">100% MDR Audit</p>
                 </div>
               </div>
             </div>
 
-            {/* Wall Frame 3 */}
-            <div className="flex flex-col items-center group">
-              {/* Brass Wall Nail & Wire */}
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-700 border border-amber-900 shadow-xs mb-0.5" />
-              <div className="w-8 h-3 border-t-2 border-slate-600/50 -mt-1.5" />
-              {/* Picture Frame Molding */}
-              <div className="p-1.5 bg-[#3B2516] rounded-xl shadow-[0_12px_24px_-4px_rgba(20,50,30,0.28)] border border-[#26170D] hover:-translate-y-1 transition duration-200 cursor-default">
-                <div className="bg-[#FAFDF9] rounded-lg p-2.5 flex items-center gap-2.5 border border-emerald-900/10 min-w-[155px]">
-                  <div className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-extrabold text-slate-800 leading-tight">Statutory Defense</p>
-                    <span className="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded inline-block mt-0.5">NPCI Chargebacks</span>
-                  </div>
+            {/* Frame 3 */}
+            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Statutory Defense</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">NPCI Chargebacks</p>
                 </div>
               </div>
             </div>
 
           </div>
 
-          {/* Minimalist Wall Clock (Upper Wall) */}
+          {/* Wall Clock */}
           <div className="absolute top-16 right-16 w-14 h-14 rounded-full bg-white/95 border-[3px] border-slate-700/80 shadow-md flex items-center justify-center z-10">
             <div className="w-1.5 h-1.5 rounded-full bg-slate-800 relative">
               <div className="absolute bottom-0 left-[2px] w-[2px] h-4 bg-slate-800 origin-bottom rotate-45" />
@@ -328,40 +294,34 @@ export default function Login() {
             </div>
           </div>
 
-          {/* ─── ISOMETRIC DESK & 3D CHARACTER SCENE ─── */}
+          {/* ─── DESK & CHARACTER SCENE ─── */}
           <div className="relative z-10 flex flex-col items-center my-auto">
             
-            {/* 3D Character Figure */}
+            {/* 3D Character */}
             <div className="relative flex flex-col items-center -mb-7 z-10">
-              {/* Head & Glasses */}
               <div className="w-16 h-18 rounded-[20px] bg-[#E5B596] shadow-md relative flex flex-col items-center border border-[#D4A384]">
-                {/* Hair */}
                 <div className="absolute -top-1 w-17 h-8 bg-[#4A3225] rounded-t-2xl shadow-xs" />
-                {/* Glasses */}
                 <div className="flex items-center gap-1 mt-7 z-10">
                   <div className="w-4 h-3.5 rounded-sm border-2 border-slate-800 bg-white/30" />
                   <div className="w-1.5 h-0.5 bg-slate-800" />
                   <div className="w-4 h-3.5 rounded-sm border-2 border-slate-800 bg-white/30" />
                 </div>
-                {/* Friendly Smile & Beard */}
                 <div className="w-8 h-4 bg-[#4A3225] rounded-b-xl mt-1.5 flex items-center justify-center">
                   <div className="w-3.5 h-1 bg-white rounded-full" />
                 </div>
               </div>
-
-              {/* Lime/Mint Sweater Torso */}
               <div className="w-26 h-22 rounded-t-3xl bg-[#84CC16] shadow-lg border-t-2 border-[#A3E635] flex items-center justify-center relative">
                 <div className="w-6 h-6 rounded-full bg-indigo-600 border border-indigo-700 shadow-xs" />
               </div>
             </div>
 
-            {/* ─── WARM SCANDINAVIAN OAK WOOD DESK (DOES NOT MERGE WITH DARK GREEN FLOOR) ─── */}
+            {/* ─── WARM OAK WOOD DESK ─── */}
             <div className="relative z-20 flex flex-col items-center">
               
-              {/* Desk Top Surface: Warm Amber Oak Wood with 3D Bevel */}
+              {/* Desk Top */}
               <div className="w-92 h-14 rounded-t-[22px] bg-gradient-to-r from-[#D98E52] via-[#E8A56A] to-[#C97C3E] border-t-2 border-[#FBD8B3] shadow-md relative flex items-center justify-between px-7">
                 
-                {/* Sleek Laptop Screen with Settlement Payout */}
+                {/* Laptop */}
                 <div className="w-34 h-22 rounded-t-xl bg-slate-200 border-2 border-slate-400 shadow-md relative flex flex-col items-center justify-center -mt-10">
                   <div className="w-30 h-16 rounded-lg bg-slate-900 border border-slate-700 flex flex-col items-center justify-center text-teal-400 font-mono text-[9px] font-bold">
                     <span>PAYOUT SETTLED</span>
@@ -370,47 +330,29 @@ export default function Login() {
                   <div className="w-38 h-2.5 bg-slate-300 rounded-b-md shadow-xs absolute -bottom-1" />
                 </div>
 
-                {/* Right Side Accessories: Paytm Soundbox with Physical Keypad & Coffee Mug */}
-                <div className="flex items-end gap-3 -mt-6">
-                  
-                  {/* Real Paytm Soundbox with Keypad & Speaker Grille */}
-                  <div className="w-13 h-17 rounded-xl bg-[#002970] border-2 border-[#00BAF2] shadow-lg flex flex-col items-center justify-between p-1 relative">
-                    {/* Speaker Grille */}
-                    <div className="w-9 h-3.5 rounded bg-[#001A49] flex items-center justify-center gap-0.5">
-                      <div className="w-1 h-1 rounded-full bg-white/40" />
-                      <div className="w-1 h-1 rounded-full bg-white/60" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <div className="w-1 h-1 rounded-full bg-white/60" />
-                      <div className="w-1 h-1 rounded-full bg-white/40" />
+                {/* ─── PAYTM SOUNDBOX (ORIGINAL SIMPLE BLUE + QR ADDED) ─── */}
+                <div className="flex items-end gap-3.5 -mt-3">
+                  <div className="w-12 h-14 rounded-xl bg-[#00BAF2] border-2 border-white shadow-md flex flex-col items-center justify-between p-1">
+                    <div className="w-8 h-6 rounded bg-[#002970] flex items-center justify-center">
+                      <Radio className="w-4 h-4 text-white animate-pulse" />
                     </div>
-
-                    {/* Soundbox Keypad (Volume +, -, Play/Replay) */}
-                    <div className="w-9 bg-[#003882] rounded py-0.5 px-1 flex items-center justify-around border border-[#00BAF2]/40 shadow-inner">
-                      <span className="text-[8px] font-extrabold text-white leading-none hover:text-[#00BAF2] cursor-default">+</span>
-                      <span className="text-[8px] font-extrabold text-white leading-none hover:text-[#00BAF2] cursor-default">-</span>
-                      <span className="text-[7px] font-bold text-emerald-300 leading-none hover:text-emerald-200 cursor-default">▶</span>
-                    </div>
-
-                    {/* Paytm Brand & mini QR stand */}
                     <div className="flex items-center justify-between w-full px-0.5">
                       <span className="text-[7px] font-black text-white uppercase tracking-tighter">PAYTM</span>
-                      <QrCode className="w-2.5 h-2.5 text-white/80" />
+                      <QrCode className="w-3 h-3 text-white/90" />
                     </div>
                   </div>
 
-                  {/* Purple Coffee Mug */}
-                  <div className="w-7 h-8 rounded-b-lg rounded-t-sm bg-indigo-600 shadow-md relative flex items-center justify-center">
+                  {/* Coffee Mug */}
+                  <div className="w-8 h-9 rounded-b-lg rounded-t-sm bg-indigo-600 shadow-md relative flex items-center justify-center">
                     <div className="absolute -top-3 w-3 h-3 border-r-2 border-white/60 rounded-full animate-bounce" />
-                    <div className="w-2.5 h-3.5 rounded-r-md border-2 border-indigo-600 absolute -right-2.5" />
+                    <div className="w-3 h-4 rounded-r-md border-2 border-indigo-600 absolute -right-3" />
                   </div>
-
                 </div>
 
               </div>
 
-              {/* Desk Front Apron: Deep Polished Teak Wood Facia */}
+              {/* Desk Front Apron */}
               <div className="w-92 h-14 rounded-b-[18px] bg-gradient-to-r from-[#8C4F22] via-[#A05C29] to-[#7B4118] border-b-4 border-[#5C2E0E] shadow-2xl relative">
-                {/* Desk Legs (Crisp White Metal with Dark Rubber Feet) */}
                 <div className="absolute top-10 left-8 flex flex-col items-center">
                   <div className="w-3 h-20 bg-white shadow-md border-r border-slate-300" />
                   <div className="w-3.5 h-2 bg-slate-800 rounded-b-md" />
@@ -421,12 +363,10 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Soft Ambient Table Shadow on Floor */}
               <div className="w-84 h-6 bg-black/40 blur-md rounded-full -mt-2 pointer-events-none" />
-
             </div>
 
-            {/* Indoor Snake Plant (Right of Desk) */}
+            {/* Snake Plant */}
             <div className="absolute -right-8 bottom-4 flex flex-col items-center z-15">
               <div className="flex gap-0.5 items-end">
                 <div className="w-3 h-22 rounded-t-full bg-emerald-600 shadow-sm" />
@@ -438,7 +378,7 @@ export default function Login() {
 
           </div>
 
-          {/* ─── BOTTOM TRUST & COMPLIANCE BAR (SHIFTED RIGHT, CENTERED UNDER THE TABLE) ─── */}
+          {/* ─── BOTTOM TRUST BAR ─── */}
           <div className="relative z-10 w-full flex justify-center items-center pb-2">
             <div className="flex items-center gap-4 text-xs font-semibold text-emerald-100/95 bg-emerald-950/75 backdrop-blur-md py-2 px-5 rounded-full border border-emerald-800/40 shadow-sm">
               <span className="flex items-center gap-1.5">
@@ -460,24 +400,17 @@ export default function Login() {
 
         </section>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            RIGHT SIDE: CONSTANT-SIZE WHITE AUTH CARD FLOATING ON ROOM BACKGROUND
-            - Fixed stable height & width (no jumping or size jitter)
-            - Content distributed evenly with zero congested spacing
-            - Outer overflow-hidden prevents scrollbar marks from leaking
-            - Internal 1px flush scrollbar with hidden buttons
-           ══════════════════════════════════════════════════════════════════════ */}
+        {/* ═══ RIGHT SIDE: AUTH CARD (FIXED SIZE, EQUAL PADDING TOP & BOTTOM) ═══ */}
         <section className="col-span-1 lg:col-span-5 h-full p-4 sm:p-6 lg:p-8 flex items-center justify-center z-20">
           
-          {/* Constant Locked Dimensions Card: Exactly 430px wide, 670px high */}
           <div className="w-full max-w-[430px] h-[670px] max-h-[94vh] bg-white rounded-[36px] shadow-[0_25px_60px_-15px_rgba(20,50,30,0.35)] border border-white/80 overflow-hidden relative flex flex-col text-slate-900">
             
-            {/* Scrollable Inner Container (1px sleek scrollbar, perfectly contained inside) */}
-            <div className="w-full h-full p-6 sm:p-7 flex flex-col justify-between overflow-y-auto thin-scroll">
+            {/* Inner scroll container — equal py-7 top & bottom */}
+            <div className="w-full h-full py-7 px-6 sm:px-7 flex flex-col gap-4 overflow-y-auto thin-scroll">
               
-              {/* ─── CARD HEADER ZONE ─── */}
-              <div className="shrink-0">
-                <div className="flex items-center justify-center gap-2 mb-2">
+              {/* ─── CARD HEADER (FIXED AT TOP) ─── */}
+              <div className="shrink-0 space-y-2">
+                <div className="flex items-center justify-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-[#84CC16] flex items-center justify-center text-white font-bold text-xs shadow-xs">
                     <Sparkles className="w-4 h-4 stroke-[2.5]" />
                   </div>
@@ -486,20 +419,18 @@ export default function Login() {
                   </span>
                 </div>
 
-                {/* Big Centered Heading */}
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight text-center leading-snug">
                   {authMode === 'signin' ? (portalRole === 'merchant' ? 'Welcome back' : 'Staff Sign in') : 'Create account'}
                 </h1>
                 
-                <p className="text-xs text-slate-500 text-center mt-1 font-medium">
+                <p className="text-xs text-slate-500 text-center font-medium">
                   {authMode === 'signin' 
                     ? (portalRole === 'merchant' ? 'Access your settlement ledger & AI teammate' : 'Paytm Ops & Risk Management Console')
                     : 'Start autonomous settlement operations for your store'}
                 </p>
 
-                {/* Role Toggle: Shown ONLY in Sign-in (Staff cannot self-register) */}
                 {authMode === 'signin' ? (
-                  <div className="flex items-center justify-center gap-1 mt-3 bg-slate-100 p-1 rounded-xl max-w-[260px] mx-auto">
+                  <div className="flex items-center justify-center gap-1 bg-slate-100 p-1 rounded-xl max-w-[260px] mx-auto">
                     <button
                       type="button"
                       onClick={() => {
@@ -536,17 +467,15 @@ export default function Login() {
                     </button>
                   </div>
                 ) : (
-                  /* Staff Restriction Notice in Sign Up */
-                  <div className="mt-2.5 py-1.5 px-3 bg-emerald-50 border border-emerald-200/60 rounded-xl text-center">
+                  <div className="py-1.5 px-3 bg-emerald-50 border border-emerald-200/60 rounded-xl text-center">
                     <span className="text-[11px] font-semibold text-emerald-800">
                       Merchant Onboarding Desk · Staff accounts are admin-provisioned
                     </span>
                   </div>
                 )}
 
-                {/* Sub-tabs for Merchant Sign-in: Password vs OTP */}
                 {authMode === 'signin' && portalRole === 'merchant' && (
-                  <div className="flex justify-center gap-4 mt-2.5 text-xs font-semibold">
+                  <div className="flex justify-center gap-4 text-xs font-semibold">
                     <button
                       type="button"
                       onClick={() => { setLoginMethod('password'); setError(null); }}
@@ -573,31 +502,28 @@ export default function Login() {
                 )}
               </div>
 
-              {/* Error Alert Box */}
+              {/* Error */}
               {error && (
-                <div className="my-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 shrink-0">
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 shrink-0">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
                   <span className="leading-tight font-medium">{error}</span>
                 </div>
               )}
 
-              {/* ─── FORM ZONE: PROPERLY BALANCED IN CARD CENTER ─── */}
-              <div className="my-auto py-2">
+              {/* ─── FORM ZONE (AUTO-CENTERED IN AVAILABLE SPACE) ─── */}
+              <div className="flex-1 flex flex-col justify-center">
                 
-                {/* 1. SIGN-IN: EMAIL & PASSWORD (MERCHANT OR STAFF) */}
+                {/* Sign-in: Email & Password */}
                 {authMode === 'signin' && (portalRole === 'staff' || loginMethod === 'password') && (
                   <form onSubmit={handleEmailPasswordLogin} className="space-y-3">
-                    <div>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email address"
-                        required
-                        className="w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
-                      />
-                    </div>
-
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email address"
+                      required
+                      className="w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
+                    />
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -615,8 +541,6 @@ export default function Login() {
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
-
-                    {/* Remember me & Forgot Password */}
                     <div className="flex items-center justify-between text-xs px-1 text-slate-500">
                       <label className="flex items-center gap-2 cursor-pointer select-none">
                         <input
@@ -631,12 +555,10 @@ export default function Login() {
                         Forgot?
                       </button>
                     </div>
-
-                    {/* Primary Lime Green CTA Button */}
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 sm:py-3.5 rounded-full sm:rounded-2xl bg-[#84CC16] hover:bg-[#74B513] active:bg-[#65A30D] text-white text-sm font-bold tracking-wide shadow-md shadow-[#84CC16]/25 hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer mt-1"
+                      className="w-full py-3 sm:py-3.5 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] active:bg-[#65A30D] text-white text-sm font-bold tracking-wide shadow-md shadow-[#84CC16]/25 hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {loading ? (
                         <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -647,42 +569,36 @@ export default function Login() {
                   </form>
                 )}
 
-                {/* 2. SIGN-IN: MOBILE OTP */}
+                {/* Sign-in: Mobile OTP */}
                 {authMode === 'signin' && portalRole === 'merchant' && loginMethod === 'otp' && (
                   <form onSubmit={!otpSent ? handleRequestOtp : handleVerifyOtp} className="space-y-3">
-                    <div>
-                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">+91</span>
-                        <input
-                          type="tel"
-                          maxLength={10}
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                          placeholder="Phone number"
-                          required
-                          className="w-full pl-13 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
-                        />
-                      </div>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">+91</span>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Phone number"
+                        required
+                        className="w-full pl-13 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
+                      />
                     </div>
-
                     {otpSent && (
-                      <div className="relative">
-                        <input
-                          type="text"
-                          maxLength={6}
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value)}
-                          placeholder="6-Digit OTP (Demo: 123456)"
-                          required
-                          className="w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition text-center tracking-widest font-mono font-bold"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        placeholder="6-Digit OTP (Demo: 123456)"
+                        required
+                        className="w-full px-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition text-center tracking-widest font-mono font-bold"
+                      />
                     )}
-
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 sm:py-3.5 rounded-full sm:rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-sm font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer mt-1"
+                      className="w-full py-3 sm:py-3.5 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-sm font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {loading ? (
                         <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -693,7 +609,7 @@ export default function Login() {
                   </form>
                 )}
 
-                {/* 3. SIGN-UP: MERCHANT ONLY (FITS EXACT SAME HEIGHT WITH STREAMLINED GRID) */}
+                {/* Sign-up: Merchant Only */}
                 {authMode === 'signup' && (
                   <form onSubmit={handleSignup} className="space-y-2.5">
                     <input
@@ -704,7 +620,6 @@ export default function Login() {
                       required
                       className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
                     />
-
                     <input
                       type="text"
                       value={signupBusiness}
@@ -713,7 +628,6 @@ export default function Login() {
                       required
                       className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
                     />
-
                     <input
                       type="email"
                       value={signupEmail}
@@ -722,7 +636,6 @@ export default function Login() {
                       required
                       className="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
                     />
-
                     <div className="grid grid-cols-2 gap-2">
                       <input
                         type="tel"
@@ -742,11 +655,10 @@ export default function Login() {
                         className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
                       />
                     </div>
-
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 rounded-full sm:rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-xs font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer mt-1"
+                      className="w-full py-3 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-xs font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {loading ? (
                         <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -757,9 +669,9 @@ export default function Login() {
                   </form>
                 )}
 
-                {/* 4. STAFF 2FA OVERLAY */}
+                {/* Staff 2FA */}
                 {requires2FA && (
-                  <form onSubmit={handleVerify2FA} className="space-y-3 mt-2">
+                  <form onSubmit={handleVerify2FA} className="space-y-3">
                     <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
                       <p className="text-xs text-amber-800 font-semibold">Staff 2FA Verification Required</p>
                       <p className="text-[11px] text-amber-600 mt-0.5">Use Demo 2FA Code: <span className="font-bold text-amber-900">654321</span></p>
@@ -776,7 +688,7 @@ export default function Login() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 rounded-full sm:rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold tracking-wide shadow-md transition cursor-pointer"
+                      className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold tracking-wide shadow-md transition cursor-pointer"
                     >
                       Verify & Enter Console
                     </button>
@@ -785,9 +697,9 @@ export default function Login() {
 
               </div>
 
-              {/* ─── CARD FOOTER ZONE: 1-CLICK INSTANT DEMO & BOTTOM LINK ─── */}
-              <div className="shrink-0 pt-1">
-                <div className="relative my-2 flex items-center justify-center">
+              {/* ─── CARD FOOTER (FIXED AT BOTTOM) ─── */}
+              <div className="shrink-0 space-y-2">
+                <div className="relative flex items-center justify-center">
                   <div className="border-t border-slate-200 w-full" />
                   <span className="bg-white px-3 text-[10px] uppercase font-bold text-slate-400 shrink-0 tracking-wider">
                     or 1-click instant demo
@@ -795,7 +707,6 @@ export default function Login() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {/* Demo Merchant Button */}
                   <button
                     type="button"
                     disabled={Boolean(quickLoading)}
@@ -817,7 +728,6 @@ export default function Login() {
                     )}
                   </button>
 
-                  {/* Demo Admin Button */}
                   <button
                     type="button"
                     disabled={Boolean(quickLoading)}
@@ -840,15 +750,13 @@ export default function Login() {
                   </button>
                 </div>
 
-                {/* Terms notice */}
-                <p className="text-[10px] text-slate-400 text-center mt-2 leading-relaxed">
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
                   By continuing, you agree to Sulajh AI's{' '}
                   <span className="font-semibold text-slate-600">Terms</span> &{' '}
                   <span className="font-semibold text-slate-600">Privacy Policy</span>.
                 </p>
 
-                {/* Bottom Toggle Between Sign In & Sign Up */}
-                <div className="text-center mt-1.5 pt-1.5 border-t border-slate-100">
+                <div className="text-center pt-1.5 border-t border-slate-100">
                   {authMode === 'signin' ? (
                     <p className="text-xs text-slate-600 font-medium">
                       Don't have an account?{' '}
@@ -880,7 +788,6 @@ export default function Login() {
                     </p>
                   )}
                 </div>
-
               </div>
 
             </div>
