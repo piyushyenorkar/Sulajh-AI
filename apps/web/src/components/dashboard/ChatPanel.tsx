@@ -141,29 +141,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
   return (
     <>
-      {/* ─── FLOATING "ASK SULAJH" PILL BUTTON (MATCHING SPEC) ──────────────── */}
-      {!isOpen && (
-        <button
-          type="button"
-          onClick={onOpen}
-          className="fixed bottom-6 right-6 z-40 bg-slate-950 hover:bg-slate-900 text-white pl-4 pr-5 py-3 rounded-full shadow-[0_16px_36px_rgba(0,0,0,0.35)] border border-white/15 flex items-center gap-2.5 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
-        >
-          {/* Glowing Violet Dot */}
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500 ring-2 ring-violet-300" />
-          </span>
-
-          <span className="font-bold text-xs tracking-wide">
-            Ask Sulajh AI
-          </span>
-
-          <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full font-medium text-slate-300 group-hover:bg-violet-500/20 group-hover:text-violet-200 transition">
-            24x7 Ops
-          </span>
-        </button>
-      )}
-
       {/* ─── SLIDE-OVER DRAWER CHAT PANEL ───────────────────────────────────── */}
       {isOpen && (
         <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[440px] bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.2)] border-l border-slate-100 flex flex-col animate-slide-left">
