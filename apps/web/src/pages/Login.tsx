@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -21,6 +21,91 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { PaytmLogo } from '../components/PaytmLogo';
+
+// ─── REAL WORKING WALL CLOCK (LIVE SYSTEM TIME TICKING WITH REAL SECONDS HAND) ───
+function RealWorkingWallClock() {
+  const [time, setTime] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const seconds = time.getSeconds();
+
+  const secondDeg = seconds * 6; // 360 / 60
+  const minuteDeg = minutes * 6 + seconds * 0.1; // 360 / 60
+  const hourDeg = (hours % 12) * 30 + minutes * 0.5; // 360 / 12
+
+  return (
+    <div className="absolute top-10 right-14 flex flex-col items-center select-none z-10 group">
+      {/* Wall Pin & Hanging Ring */}
+      <div className="relative flex flex-col items-center z-10">
+        <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+          <div className="w-1 h-1 rounded-full bg-white/80" />
+        </div>
+        <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
+      </div>
+
+      {/* Hanging Cord */}
+      <div className="w-[1.5px] h-3.5 bg-slate-600/70 -mt-1 mb-0.5" />
+
+      {/* Outer Rim / Bezel */}
+      <div className="w-24 h-24 rounded-full bg-[#1A2332] p-1.5 shadow-[0_14px_30px_rgba(0,0,0,0.3)] border-[3.5px] border-[#334155] flex items-center justify-center relative">
+        
+        {/* Clock Inner Face */}
+        <div className="w-full h-full rounded-full bg-[#FAFCFB] relative flex items-center justify-center shadow-inner overflow-hidden border border-slate-200">
+          
+          {/* Dial Glass Reflection Sheen */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-slate-100/60 pointer-events-none" />
+
+          {/* Dial Numbers: 12, 3, 6, 9 */}
+          <span className="absolute top-1 text-[10px] font-black text-slate-800 leading-none">12</span>
+          <span className="absolute right-1.5 text-[10px] font-black text-slate-800 leading-none">3</span>
+          <span className="absolute bottom-1 text-[10px] font-black text-slate-800 leading-none">6</span>
+          <span className="absolute left-1.5 text-[10px] font-black text-slate-800 leading-none">9</span>
+
+          {/* Hour Tick Dots */}
+          <div className="absolute top-2.5 right-4.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute top-4.5 right-2.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute bottom-4.5 right-2.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute bottom-2.5 right-4.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute bottom-2.5 left-4.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute bottom-4.5 left-2.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute top-4.5 left-2.5 w-1 h-1 bg-slate-300 rounded-full" />
+          <div className="absolute top-2.5 left-4.5 w-1 h-1 bg-slate-300 rounded-full" />
+
+          {/* Hour Hand */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 -translate-x-1/2 w-[3px] h-5 bg-slate-900 rounded-full origin-bottom shadow-xs transition-transform duration-300"
+            style={{ transform: `translateX(-50%) rotate(${hourDeg}deg)` }}
+          />
+
+          {/* Minute Hand */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 -translate-x-1/2 w-[2px] h-7 bg-slate-700 rounded-full origin-bottom shadow-xs transition-transform duration-300"
+            style={{ transform: `translateX(-50%) rotate(${minuteDeg}deg)` }}
+          />
+
+          {/* Second Hand (Real-time ticking red hand with counterweight) */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 -translate-x-1/2 w-[1.5px] h-8.5 bg-rose-500 rounded-full origin-bottom transition-transform duration-100 ease-linear z-10"
+            style={{ transform: `translateX(-50%) rotate(${secondDeg}deg)` }}
+          >
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[2px] h-2 bg-rose-500 rounded-b-full" />
+          </div>
+
+          {/* Center Pivot Nut */}
+          <div className="w-2.5 h-2.5 rounded-full bg-rose-600 border border-white shadow-xs z-20 relative" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -242,57 +327,115 @@ export default function Login() {
             }}
           />
 
-          {/* ─── 3 CLEAN WALL PICTURE FRAMES ─── */}
-          <div className="relative z-10 flex items-start gap-5 max-w-xl">
+          {/* ─── 3 HANGING WALL PICTURE FRAMES (EQUAL WIDTH & HEIGHT, WALL PINS & WIRES) ─── */}
+          <div className="relative z-10 flex items-start gap-4 max-w-xl">
             
-            {/* Frame 1 */}
-            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <Zap className="w-4 h-4 stroke-[2.5]" />
+            {/* Hanging Frame 1: Instant Clearing */}
+            <div className="flex flex-col items-center">
+              {/* Wall Pin */}
+              <div className="relative flex flex-col items-center z-10">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                  <div className="w-1 h-1 rounded-full bg-white/80" />
+                </div>
+                <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
+              </div>
+
+              {/* Hanging Wire Triangle */}
+              <svg className="w-36 h-6 -my-0.5 overflow-visible" viewBox="0 0 144 24">
+                <line x1="72" y1="2" x2="18" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <line x1="72" y1="2" x2="126" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <circle cx="72" cy="3" r="2" fill="none" stroke="#334155" strokeWidth="1" />
+              </svg>
+
+              {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Zap className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded-md">
+                    T+0 SLA
+                  </span>
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Instant Clearing</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">T+0 Diagnostics</p>
+                  <p className="text-[12px] font-bold text-slate-900 leading-tight">Instant Clearing</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Real-time Diagnostics</p>
                 </div>
               </div>
             </div>
 
-            {/* Frame 2 */}
-            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
-                  <Receipt className="w-4 h-4 stroke-[2.5]" />
+            {/* Hanging Frame 2: Deduction Reconcile */}
+            <div className="flex flex-col items-center">
+              {/* Wall Pin */}
+              <div className="relative flex flex-col items-center z-10">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                  <div className="w-1 h-1 rounded-full bg-white/80" />
+                </div>
+                <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
+              </div>
+
+              {/* Hanging Wire Triangle */}
+              <svg className="w-36 h-6 -my-0.5 overflow-visible" viewBox="0 0 144 24">
+                <line x1="72" y1="2" x2="18" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <line x1="72" y1="2" x2="126" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <circle cx="72" cy="3" r="2" fill="none" stroke="#334155" strokeWidth="1" />
+              </svg>
+
+              {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Receipt className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+                  <span className="text-[9px] font-bold text-teal-700 bg-teal-50 border border-teal-200/60 px-1.5 py-0.5 rounded-md">
+                    100% Audit
+                  </span>
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Deduction Reconcile</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">100% MDR Audit</p>
+                  <p className="text-[12px] font-bold text-slate-900 leading-tight">Deduction Reconcile</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">MDR Rate Splits</p>
                 </div>
               </div>
             </div>
 
-            {/* Frame 3 */}
-            <div className="bg-white rounded-2xl px-5 py-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] border-[3px] border-slate-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+            {/* Hanging Frame 3: Statutory Defense */}
+            <div className="flex flex-col items-center">
+              {/* Wall Pin */}
+              <div className="relative flex flex-col items-center z-10">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                  <div className="w-1 h-1 rounded-full bg-white/80" />
+                </div>
+                <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
+              </div>
+
+              {/* Hanging Wire Triangle */}
+              <svg className="w-36 h-6 -my-0.5 overflow-visible" viewBox="0 0 144 24">
+                <line x1="72" y1="2" x2="18" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <line x1="72" y1="2" x2="126" y2="24" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+                <circle cx="72" cy="3" r="2" fill="none" stroke="#334155" strokeWidth="1" />
+              </svg>
+
+              {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+                  <span className="text-[9px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200/60 px-1.5 py-0.5 rounded-md">
+                    NPCI Guard
+                  </span>
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold text-slate-900 leading-tight">Statutory Defense</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">NPCI Chargebacks</p>
+                  <p className="text-[12px] font-bold text-slate-900 leading-tight">Statutory Defense</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Chargeback Deadlines</p>
                 </div>
               </div>
             </div>
 
           </div>
 
-          {/* Wall Clock */}
-          <div className="absolute top-16 right-16 w-14 h-14 rounded-full bg-white/95 border-[3px] border-slate-700/80 shadow-md flex items-center justify-center z-10">
-            <div className="w-1.5 h-1.5 rounded-full bg-slate-800 relative">
-              <div className="absolute bottom-0 left-[2px] w-[2px] h-4 bg-slate-800 origin-bottom rotate-45" />
-              <div className="absolute bottom-0 left-[2px] w-[2px] h-5 bg-slate-700 origin-bottom -rotate-60" />
-            </div>
-          </div>
+          {/* ─── REAL WORKING WALL CLOCK (LIVE TICKING SECOND HAND) ─── */}
+          <RealWorkingWallClock />
 
           {/* ─── DESK & CHARACTER SCENE ─── */}
           <div className="relative z-10 flex flex-col items-center my-auto">
