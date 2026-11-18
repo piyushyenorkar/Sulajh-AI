@@ -35,6 +35,10 @@ import {
   VolumeX,
   Square,
   Radio,
+  Copy,
+  Pause,
+  CornerDownLeft,
+  Plus,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
@@ -195,7 +199,9 @@ export default function Chat() {
   // Audio Playback State for TTS (Gnani Timbre)
   const [playingMsgId, setPlayingMsgId] = useState<string | null>(null);
   const [ttsLoadingId, setTtsLoadingId] = useState<string | null>(null);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [showSuggestions, setShowSuggestions] = useState(false); // Collapsed by default for max chat room
   const [showPolicyInfo, setShowPolicyInfo] = useState(false);
@@ -417,51 +423,71 @@ export default function Chat() {
     }
   };
 
-  // ─── REAL VOICE STT (RECORD & TRANSCRIBE VIA GNANI AI) ────────────────────
-  const handleToggleVoice = async () => {
-    if (isRecording) {
-      setVoiceProcessing(true);
-      try {
-        const recorded = await stopRecording();
-        if (!recorded || !recorded.base64) {
-          setVoiceProcessing(false);
-          return;
-        }
-
-        const sttRes = await api.transcribeVoice(recorded.base64, recorded.mimeType, language);
-        if (sttRes && sttRes.transcript) {
-          if (sttRes.needs_amount_confirmation) {
-            // Mandated step: amount or financial action detected, review before send
-            setVoiceReview({
-              transcript: sttRes.transcript,
-              needsConfirm: true,
-              detectedLanguage: sttRes.detected_language,
-              provider: sttRes.provider,
-            });
-            setInputText(sttRes.transcript);
-          } else {
-            // Instant query placement
-            setInputText(sttRes.transcript);
-            handleSendMessage(sttRes.transcript);
-          }
-        }
-      } catch (err: any) {
-        console.error('Voice transcription error:', err);
-        alert(err.message || 'Could not transcribe voice. Please try again.');
-      } finally {
-        setVoiceProcessing(false);
-      }
-    } else {
-      setVoiceReview(null);
-      const started = await startRecording();
-      if (!started && micError) {
-        alert(micError);
-      }
+  // ─── CLAUDE-STYLE VOICE STT (RECORD & TRANSCRIBE IN INPUT BAR) ─────────────
+  const handleStartVoice = async () => {
+    setVoiceReview(null);
+    const started = await startRecording();
+    if (!started && micError) {
+      alert(micError);
     }
   };
 
-  // ─── REAL VOICE TTS (PLAY ASSISTANT REPLY VIA GNANI VOICE) ────────────────
+  const handleFinishVoice = async () => {
+    setVoiceProcessing(true);
+    try {
+      const recorded = await stopRecording();
+      if (!recorded || !recorded.base64) {
+        setVoiceProcessing(false);
+        return;
+      }
+
+      const sttRes = await api.transcribeVoice(recorded.base64, recorded.mimeType, language);
+      if (sttRes && sttRes.transcript) {
+        // Claude-style: Place transcribed text directly into the input field!
+        setInputText((prev) => (prev ? `${prev.trim()} ${sttRes.transcript}` : sttRes.transcript));
+
+        if (sttRes.needs_amount_confirmation) {
+          setVoiceReview({
+            transcript: sttRes.transcript,
+            needsConfirm: true,
+            detectedLanguage: sttRes.detected_language,
+            provider: sttRes.provider,
+          });
+        }
+
+        // Focus input field so merchant can immediately review/edit or press Enter
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 80);
+      }
+    } catch (err: any) {
+      console.error('Voice transcription error:', err);
+      alert(err.message || 'Could not transcribe voice. Please try again.');
+    } finally {
+      setVoiceProcessing(false);
+    }
+  };
+
+  const handleCancelVoice = () => {
+    cancelRecording();
+    setVoiceProcessing(false);
+  };
+
+  // ─── CLAUDE-STYLE COPY & TTS (PLAY ASSISTANT REPLY VIA GNANI VOICE) ─────────
+  const handleCopyMessage = async (msgId: string, text: string) => {
+    try {
+      // Clean plain text to clipboard
+      const plain = text.replace(/\|[^\n]+\|/g, '').replace(/```[\s\S]*?```/g, '').replace(/[#*_~>`]/g, '').trim();
+      await navigator.clipboard.writeText(plain || text);
+      setCopiedMsgId(msgId);
+      setTimeout(() => setCopiedMsgId(null), 1800);
+    } catch (err) {
+      console.warn('Copy failed', err);
+    }
+  };
+
   const handlePlaySpeech = async (msgId: string, text: string) => {
+    // If clicking on the currently playing message, pause/stop it (Claude style)
     if (playingMsgId === msgId) {
       if (activeAudioRef.current) {
         activeAudioRef.current.pause();
@@ -910,26 +936,42 @@ export default function Chat() {
                       <span>View Deductions Hisaab</span>
                     </button>
 
-                    {/* Gnani Voice Listen / Play Button */}
-                    <button
-                      type="button"
-                      onClick={() => handlePlaySpeech(msg.id, msg.text)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-[11px] transition cursor-pointer ${
-                        playingMsgId === msg.id
-                          ? 'bg-amber-100 text-amber-900 ring-1 ring-amber-400 animate-pulse'
-                          : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800'
-                      }`}
-                      title="Listen to spoken response via Gnani AI Voice"
-                    >
-                      {ttsLoadingId === msg.id ? (
-                        <RefreshCw className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
-                      ) : playingMsgId === msg.id ? (
-                        <VolumeX className="w-3.5 h-3.5 text-amber-800" />
-                      ) : (
-                        <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
-                      )}
-                      <span>{playingMsgId === msg.id ? 'Stop Voice' : 'Listen'}</span>
-                    </button>
+                    {/* ─── CLAUDE-STYLE MESSAGE UTILITIES: COPY + TTS READ ALOUD (IMAGES 3 & 4) ─── */}
+                    <div className="flex items-center gap-1.5 ml-auto shrink-0">
+                      {/* Copy Message */}
+                      <button
+                        type="button"
+                        onClick={() => handleCopyMessage(msg.id, msg.text)}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/80 transition-colors cursor-pointer"
+                        title={copiedMsgId === msg.id ? 'Copied!' : 'Copy response'}
+                      >
+                        {copiedMsgId === msg.id ? (
+                          <Check className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                        ) : (
+                          <Copy className="w-4 h-4 stroke-[1.8]" />
+                        )}
+                      </button>
+
+                      {/* Claude-style Read Aloud / Pause Button (Larger, crisp tap target) */}
+                      <button
+                        type="button"
+                        onClick={() => handlePlaySpeech(msg.id, msg.text)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                          playingMsgId === msg.id
+                            ? 'bg-slate-900 text-white shadow-xs ring-2 ring-slate-900/10'
+                            : 'text-slate-500 hover:text-blue-600 hover:bg-blue-50/80'
+                        }`}
+                        title={playingMsgId === msg.id ? 'Pause reading aloud' : 'Read aloud (Gnani AI Voice)'}
+                      >
+                        {ttsLoadingId === msg.id ? (
+                          <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
+                        ) : playingMsgId === msg.id ? (
+                          <Pause className="w-4 h-4 fill-white stroke-none" />
+                        ) : (
+                          <Volume2 className="w-4.5 h-4.5 stroke-[2]" />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Bottom Right Timestamp */}
@@ -1015,127 +1057,157 @@ export default function Chat() {
             </div>
           )}
 
-          {/* Explicit Voice Amount Confirmation Banner (Spec A2 #7 & Chunk 6) */}
+          {/* Subtle Financial Safety Hint (Claude style, non-intrusive) */}
           {voiceReview && (
-            <div className="bg-amber-50 border border-amber-250 rounded-2xl p-2.5 sm:p-3 flex items-start justify-between gap-3 animate-fade-in shadow-xs text-xs">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-bold text-amber-900 flex items-center gap-1.5">
-                    <span>Amount/Action Detected in Speech</span>
-                    <span className="px-1.5 py-0.5 bg-amber-200/80 text-[10px] rounded text-amber-900 font-mono font-bold">
-                      {voiceReview.provider === 'gnani' ? 'Gnani STT' : 'Sarvam STT'}
-                    </span>
-                  </div>
-                  <p className="text-amber-800 mt-0.5 font-medium text-xs">"{voiceReview.transcript}"</p>
-                </div>
+            <div className="bg-amber-50/90 border border-amber-200 rounded-xl px-3 py-1.5 flex items-center justify-between text-xs text-amber-900 animate-fade-in">
+              <div className="flex items-center gap-2 truncate">
+                <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span className="font-bold text-[11px]">Financial action detected in speech:</span>
+                <span className="truncate font-medium text-[11px] text-amber-800">
+                  "{voiceReview.transcript}" • Review/edit text below before pressing Enter
+                </span>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const toSend = voiceReview.transcript;
-                    setVoiceReview(null);
-                    handleSendMessage(toSend);
-                  }}
-                  className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-full text-[11px] transition cursor-pointer"
-                >
-                  Verify & Send
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setVoiceReview(null)}
-                  className="p-1 rounded-full hover:bg-amber-200/60 text-amber-700 cursor-pointer"
-                  title="Edit in input below"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setVoiceReview(null)}
+                className="text-amber-600 hover:text-amber-900 p-0.5 rounded cursor-pointer"
+                title="Dismiss hint"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
           )}
 
-          {/* Voice Processing Banner */}
-          {voiceProcessing && (
-            <div className="bg-blue-50 border border-blue-200 text-blue-700 rounded-full px-3 py-1.5 flex items-center gap-2 text-xs font-medium animate-pulse">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600" />
-              <span>Transcribing voice via Gnani AI (Vachana Speech Engine)...</span>
-            </div>
-          )}
-
-          {/* Input Bar Form */}
+          {/* ─── CLAUDE-STYLE INPUT BAR (LIGHT FINTECH THEME) ─────────────────── */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleSendMessage();
+              if (inputText.trim() && !loading && !isRecording && !voiceProcessing) {
+                setVoiceReview(null);
+                handleSendMessage();
+              }
             }}
-            className="flex items-center gap-2 pt-0.5"
+            className="pt-0.5"
           >
-            <div className="flex-1 bg-slate-50 hover:bg-white focus-within:bg-white border border-slate-200/80 focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-full px-3 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 shadow-xs transition">
+            <div className="bg-slate-50 hover:bg-white focus-within:bg-white border border-slate-200/90 focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-full px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2.5 shadow-xs transition-all text-slate-900">
               
-              {/* Real Gnani AI Mic Record Button */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={handleToggleVoice}
-                  disabled={loading || voiceProcessing}
-                  className={`h-8 rounded-full px-2.5 flex items-center gap-1.5 transition cursor-pointer text-xs font-bold ${
-                    isRecording
-                      ? 'bg-rose-500 text-white animate-pulse shadow-md shadow-rose-500/30'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70'
-                  }`}
-                  title={isRecording ? 'Click to stop and transcribe' : 'Click to speak in Hindi, Marathi, or English (Gnani STT)'}
-                >
-                  {isRecording ? <Square className="w-3.5 h-3.5 fill-current" /> : <Mic className="w-4 h-4 text-blue-600" />}
-                  {isRecording && (
-                    <span className="font-mono text-[11px]">
-                      00:{durationSec < 10 ? `0${durationSec}` : durationSec}
-                    </span>
-                  )}
-                </button>
+              {/* Left: Plus (+) Icon */}
+              <button
+                type="button"
+                onClick={() => setShowSuggestions(!showSuggestions)}
+                className="w-7 h-7 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 flex items-center justify-center transition cursor-pointer shrink-0"
+                title="Quick prompts & tools"
+              >
+                <Plus className="w-4 h-4 stroke-[2.2]" />
+              </button>
 
-                {/* Cancel recording button */}
-                {isRecording && (
-                  <button
-                    type="button"
-                    onClick={cancelRecording}
-                    className="w-6 h-6 rounded-full hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer"
-                    title="Cancel recording"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+              {/* Center: Input / Active Voice Wave State */}
+              <div className="flex-1 flex items-center min-w-0">
+                {isRecording ? (
+                  /* ─── IMAGE 1: CLAUDE VOICE RECORDING ACTIVE ─── */
+                  <div className="flex-1 flex items-center justify-between min-w-0 pr-1 animate-fade-in">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-sm font-medium text-slate-900 truncate">
+                        {inputText ? inputText : <span className="italic text-slate-500">Listening...</span>}
+                      </span>
+                    </div>
+
+                    {/* Claude-style Wave Dots Animation (................) */}
+                    <div className="flex items-center gap-1 px-2 select-none shrink-0">
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((dot) => (
+                        <span
+                          key={dot}
+                          className="w-1 h-1 rounded-full bg-slate-400 animate-pulse"
+                          style={{
+                            animationDelay: `${(dot % 4) * 0.15}s`,
+                            animationDuration: '1s',
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : voiceProcessing ? (
+                  /* ─── TRANSCRIBING IN PROGRESS (IN ITALIC) ─── */
+                  <div className="flex-1 flex items-center gap-2 text-sm italic text-blue-600 animate-pulse min-w-0 font-medium">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600 shrink-0" />
+                    <span className="truncate">Transcribing speech with Gnani AI...</span>
+                  </div>
+                ) : (
+                  /* ─── IMAGE 2: NORMAL / TRANSCRIBED INPUT FIELD ─── */
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    placeholder={
+                      language === 'hi'
+                        ? 'पेआउट देरी, कटौती हिसाब या विवाद के बारे में पूछें...'
+                        : language === 'hinglish'
+                        ? 'Hinglish ya Hindi mein poochhein (e.g. mera hisaab samjhao)...'
+                        : 'Ask about payout delays, deductions hisaab, or disputes...'
+                    }
+                    disabled={loading}
+                    className="w-full bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 outline-none"
+                  />
                 )}
               </div>
 
-              {/* Input Field */}
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder={
-                  isRecording
-                    ? 'Listening... Speak in Hindi, Marathi, or English...'
-                    : voiceProcessing
-                    ? 'Transcribing audio with Gnani Speech AI...'
-                    : language === 'hi'
-                    ? 'पेआउट देरी, कटौती हिसाब या विवाद के बारे में पूछें...'
-                    : language === 'hinglish'
-                    ? 'Hinglish ya Hindi mein poochhein (e.g. mera hisaab samjhao)...'
-                    : 'Ask about payout delays, deductions hisaab, or disputes...'
-                }
-                disabled={loading || isRecording}
-                className="flex-1 bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 outline-none"
-              />
-            </div>
+              {/* Right Side Actions */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {isRecording ? (
+                  /* ─── IMAGE 1 BUTTONS: [X] Cancel and [✓] Confirm ─── */
+                  <div className="flex items-center gap-1.5 bg-slate-200/90 p-1 rounded-full border border-slate-300/80 animate-scale-in">
+                    {/* Cancel Recording (X) */}
+                    <button
+                      type="button"
+                      onClick={handleCancelVoice}
+                      className="w-8 h-8 rounded-full text-slate-600 hover:text-slate-950 hover:bg-slate-300/90 flex items-center justify-center transition cursor-pointer"
+                      title="Cancel recording"
+                    >
+                      <X className="w-4 h-4 stroke-[2.2]" />
+                    </button>
 
-            {/* Send Button (Black Pill) */}
-            <button
-              type="submit"
-              disabled={!inputText.trim() || loading || isRecording || voiceProcessing}
-              className="bg-slate-950 hover:bg-slate-800 disabled:opacity-40 text-white font-bold text-xs px-5 py-2.5 sm:py-3 rounded-full transition cursor-pointer flex items-center gap-1.5 shadow-sm shrink-0"
-            >
-              <span>Send</span>
-              <Send className="w-3.5 h-3.5" />
-            </button>
+                    {/* Finish & Transcribe (✓) */}
+                    <button
+                      type="button"
+                      onClick={handleFinishVoice}
+                      className="w-8 h-8 rounded-full bg-slate-950 text-white hover:bg-slate-800 flex items-center justify-center transition font-bold shadow-xs cursor-pointer active:scale-95"
+                      title="Finish and transcribe"
+                    >
+                      <Check className="w-4.5 h-4.5 stroke-[2.5]" />
+                    </button>
+                  </div>
+                ) : (
+                  /* ─── IMAGE 2 BUTTONS: [🎤] Mic and [↵] Send ─── */
+                  <>
+                    {/* Microphone Trigger (Larger, prominent voice button) */}
+                    <button
+                      type="button"
+                      onClick={handleStartVoice}
+                      disabled={loading || voiceProcessing}
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full text-slate-600 hover:text-blue-600 hover:bg-blue-50/90 active:scale-95 flex items-center justify-center transition cursor-pointer"
+                      title="Click to speak (Gnani AI Voice Input)"
+                    >
+                      <Mic className="w-5 h-5 text-blue-600 stroke-[2.2]" />
+                    </button>
+
+                    {/* Circular Enter / Send Button (↵) */}
+                    <button
+                      type="submit"
+                      disabled={!inputText.trim() || loading || voiceProcessing}
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all ${
+                        inputText.trim() && !loading && !voiceProcessing
+                          ? 'bg-slate-950 text-white hover:bg-slate-800 active:scale-95 shadow-sm cursor-pointer'
+                          : 'bg-slate-200 text-slate-400 opacity-50 cursor-not-allowed'
+                      }`}
+                      title="Send message (Enter)"
+                    >
+                      <CornerDownLeft className="w-4.5 h-4.5 stroke-[2.3]" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           </form>
         </div>
       </main>
