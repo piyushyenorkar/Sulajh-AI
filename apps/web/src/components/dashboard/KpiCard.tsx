@@ -20,14 +20,14 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   icon,
 }) => {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-[24px] p-5.5 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md group">
+    <div className="bg-white rounded-[24px] p-5.5 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <span className="text-xs font-semibold text-slate-500 tracking-normal">
           {title}
         </span>
         {icon && (
-          <div className="w-7 h-7 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center text-xs group-hover:text-blue-600 transition-colors">
+          <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs group-hover:text-blue-600 transition-colors">
             {icon}
           </div>
         )}

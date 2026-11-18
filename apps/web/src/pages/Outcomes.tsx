@@ -43,12 +43,12 @@ export default function Outcomes() {
 
       {/* Top Floating Glass Header */}
       <header className="sticky top-0 z-40 px-4 sm:px-6 py-3">
-        <div className="max-w-6xl mx-auto glass-strong border border-white/90 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-lg shadow-blue-900/5">
+        <div className="max-w-6xl mx-auto glass-strong px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-lg shadow-blue-900/5">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => navigate('/ops')}
-              className="w-9 h-9 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:text-[#002970] font-bold shadow-xs transition"
+              className="w-9 h-9 rounded-2xl bg-white flex items-center justify-center text-slate-700 hover:text-[#002970] font-bold shadow-xs transition"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
@@ -63,7 +63,7 @@ export default function Outcomes() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] px-2.5 py-1 rounded-full bg-sky-50 text-[#002970] border border-sky-100 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] px-2.5 py-1 rounded-full bg-sky-100/80 text-[#002970] font-bold uppercase tracking-wider flex items-center gap-1 shadow-2xs">
               <Activity className="w-3 h-3 text-[#00BAF2]" />
               <span>Simulated Sandbox Metrics</span>
             </span>
@@ -83,7 +83,7 @@ export default function Outcomes() {
         {/* KPI Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1 */}
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md relative overflow-hidden">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md relative overflow-hidden">
             <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
               <span>Auto-Resolution Rate</span>
               <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -102,7 +102,7 @@ export default function Outcomes() {
           </div>
 
           {/* Card 2 */}
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md relative overflow-hidden">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md relative overflow-hidden">
             <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
               <span>Time to First Response</span>
               <div className="w-8 h-8 rounded-xl bg-sky-50 text-[#002970] flex items-center justify-center">
@@ -121,7 +121,7 @@ export default function Outcomes() {
           </div>
 
           {/* Card 3 */}
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md relative overflow-hidden">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md relative overflow-hidden">
             <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
               <span>Ops Hours Saved</span>
               <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
@@ -140,7 +140,7 @@ export default function Outcomes() {
           </div>
 
           {/* Card 4 */}
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md relative overflow-hidden">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md relative overflow-hidden">
             <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
               <span>Disputes Defended</span>
               <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -161,7 +161,7 @@ export default function Outcomes() {
 
         {/* Issue Volume Breakdown Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md space-y-4">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md space-y-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[#002970]" />
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002970]">
@@ -189,7 +189,7 @@ export default function Outcomes() {
             </div>
           </div>
 
-          <div className="glass-strong p-6 rounded-[28px] border border-white shadow-md space-y-4">
+          <div className="glass-strong p-6 rounded-[28px] shadow-md space-y-4">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#002970]" />
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002970]">
@@ -197,7 +197,7 @@ export default function Outcomes() {
               </h3>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/80 border border-slate-200/80 space-y-3">
+            <div className="p-4 rounded-2xl bg-white/90 shadow-2xs space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-slate-700">Autonomous Resolves (Gated &lt; ₹5,000)</span>
                 <span className="font-extrabold text-emerald-600">74%</span>

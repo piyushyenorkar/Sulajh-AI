@@ -48,7 +48,7 @@ export default function DemoControl() {
       <div className="max-w-2xl w-full space-y-6 animate-slide-up">
         {/* Header */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-bold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider mb-3 shadow-2xs">
             <Gamepad2 className="w-4 h-4 text-[#00BAF2]" />
             <span>Live Hackathon Controller</span>
           </div>
@@ -59,14 +59,14 @@ export default function DemoControl() {
         </div>
 
         {statusMsg && (
-          <div className="p-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs font-bold animate-slide-up flex items-center gap-2.5">
+          <div className="p-4 rounded-2xl bg-emerald-500/20 text-emerald-200 text-xs font-bold animate-slide-up flex items-center gap-2.5 shadow-sm">
             <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{statusMsg}</span>
           </div>
         )}
 
         {/* Action Grid */}
-        <div className="glass-dark p-6 rounded-[32px] border border-white/10 space-y-4 backdrop-blur-xl">
+        <div className="glass-dark p-6 rounded-[32px] space-y-4 backdrop-blur-xl shadow-xl">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
             1. Trigger Proactive Events (AI Teammate Starts Work Itself)
           </h2>
@@ -75,7 +75,7 @@ export default function DemoControl() {
             <button
               onClick={() => handleTriggerEvent('settlement_failed', 'Failed Payout')}
               disabled={loadingEvent !== null}
-              className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-left transition text-xs font-medium"
+              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-left transition text-xs font-medium shadow-2xs cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-rose-400 flex items-center gap-1.5">
@@ -92,7 +92,7 @@ export default function DemoControl() {
             <button
               onClick={() => handleTriggerEvent('settlement_delayed', 'Delayed Payout')}
               disabled={loadingEvent !== null}
-              className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-left transition text-xs font-medium"
+              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-left transition text-xs font-medium shadow-2xs cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-amber-400 flex items-center gap-1.5">
@@ -109,7 +109,7 @@ export default function DemoControl() {
             <button
               onClick={() => handleTriggerEvent('dispute_due_soon', 'Dispute Due in 48h')}
               disabled={loadingEvent !== null}
-              className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-left transition text-xs font-medium"
+              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 text-left transition text-xs font-medium shadow-2xs cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-purple-400 flex items-center gap-1.5">
@@ -126,7 +126,7 @@ export default function DemoControl() {
             <button
               onClick={() => handleTriggerEvent('bank_outage', 'HDFC Bank Outage')}
               disabled={loadingEvent !== null}
-              className="p-3.5 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-left transition text-xs font-medium"
+              className="p-3.5 rounded-2xl bg-rose-500/20 hover:bg-rose-500/30 text-left transition text-xs font-medium shadow-2xs cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-rose-300 flex items-center gap-1.5">
@@ -143,7 +143,7 @@ export default function DemoControl() {
         </div>
 
         {/* Portals & Reset Control */}
-        <div className="glass-dark p-6 rounded-[32px] border border-white/10 space-y-4 backdrop-blur-xl">
+        <div className="glass-dark p-6 rounded-[32px] space-y-4 backdrop-blur-xl shadow-xl">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
             2. Jump into Demo Surfaces
           </h2>
@@ -151,47 +151,47 @@ export default function DemoControl() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <button
               onClick={() => navigate('/dashboard')}
-              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-blue-400"
+              className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-bold transition flex items-center justify-center gap-1.5 text-blue-400 shadow-2xs cursor-pointer"
             >
               <span>Merchant Dashboard</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => navigate('/chat')}
-              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-sky-300"
+              className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-bold transition flex items-center justify-center gap-1.5 text-sky-300 shadow-2xs cursor-pointer"
             >
               <span>Merchant Chat</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => navigate('/ops')}
-              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-blue-300"
+              className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-bold transition flex items-center justify-center gap-1.5 text-blue-300 shadow-2xs cursor-pointer"
             >
               <span>Ops Console</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => navigate('/outcomes')}
-              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-emerald-300"
+              className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-bold transition flex items-center justify-center gap-1.5 text-emerald-300 shadow-2xs cursor-pointer"
             >
               <span>Outcomes ROI</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => navigate('/admin')}
-              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold transition flex items-center justify-center gap-1.5 text-purple-300"
+              className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-xs font-bold transition flex items-center justify-center gap-1.5 text-purple-300 shadow-2xs cursor-pointer"
             >
               <span>Admin Panel</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+          <div className="pt-3 flex items-center justify-between">
             <span className="text-xs text-slate-400">Reset prototype to fresh initial seed state:</span>
             <button
               onClick={() => handleTriggerEvent('reset_demo', 'Reset Demo')}
               disabled={loadingEvent !== null}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/20 text-xs font-bold transition flex items-center gap-2"
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-xs"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Demo State</span>

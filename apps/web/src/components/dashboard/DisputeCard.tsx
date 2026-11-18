@@ -24,7 +24,7 @@ export const DisputeCard: React.FC<DisputeCardProps> = ({ onUploadProof, onViewA
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-[24px] p-5.5 flex flex-col justify-between h-full group">
+    <div className="bg-white rounded-[24px] p-5.5 flex flex-col justify-between h-full group shadow-xs">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export const DisputeCard: React.FC<DisputeCardProps> = ({ onUploadProof, onViewA
             <button
               type="button"
               onClick={handlePrev}
-              className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer"
+              className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer shadow-2xs"
               title="Previous dispute"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
@@ -58,7 +58,7 @@ export const DisputeCard: React.FC<DisputeCardProps> = ({ onUploadProof, onViewA
             <button
               type="button"
               onClick={handleNext}
-              className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer"
+              className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer shadow-2xs"
               title="Next dispute"
             >
               <ChevronRight className="w-3.5 h-3.5" />
@@ -68,7 +68,7 @@ export const DisputeCard: React.FC<DisputeCardProps> = ({ onUploadProof, onViewA
       </div>
 
       {/* Main Dark Dispute Card (Styled like the reference screenshot's Trending Card) */}
-      <div className="bg-[#121318] border border-white/5 rounded-[20px] p-4.5 text-white flex flex-col justify-between relative overflow-hidden my-auto shadow-md">
+      <div className="bg-slate-900 rounded-[20px] p-4.5 text-white flex flex-col justify-between relative overflow-hidden my-auto shadow-md">
         
         {/* Glow */}
         <div className="absolute top-0 right-0 w-36 h-36 bg-rose-500/10 rounded-full blur-[40px] pointer-events-none" />
@@ -121,7 +121,7 @@ export const DisputeCard: React.FC<DisputeCardProps> = ({ onUploadProof, onViewA
         </div>
 
         {/* Action Button */}
-        <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between relative z-10">
+        <div className="mt-3 pt-2 bg-white/5 px-2.5 py-1.5 rounded-xl flex items-center justify-between relative z-10">
           <span className="text-[10px] text-slate-400">
             {currentIndex + 1} of {disputes.length}
           </span>

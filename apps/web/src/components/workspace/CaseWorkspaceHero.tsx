@@ -98,14 +98,14 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
       
       {/* ─── LOCK / HOLD BANNER (FOR MANAGERS) ─── */}
       {isHighValue && (
-        <div className="bg-amber-50 border border-amber-200/80 rounded-2xl px-4 py-3 flex items-center justify-between text-xs text-amber-900">
+        <div className="bg-amber-100 rounded-2xl px-4 py-3 flex items-center justify-between text-xs text-amber-950 shadow-xs">
           <div className="flex items-center gap-2 font-medium">
             <Lock className="w-4 h-4 text-amber-600" />
             <span>
               <strong>Case Lock Active:</strong> Held by you for <strong>{formatTime(lockCountdown)}</strong>. Other staff cannot make conflicting approvals.
             </span>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-amber-200/60 text-amber-800 font-bold text-[11px]">
+          <span className="px-2.5 py-0.5 rounded-full bg-amber-200/60 text-amber-900 font-bold text-[11px]">
             4-Eye Policy Enforced
           </span>
         </div>
@@ -244,7 +244,7 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
             <button
               type="button"
               onClick={onBackToQueue}
-              className="px-4 py-2.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-slate-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to queue</span>
@@ -353,10 +353,10 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
       {/* ─── 2FA TOTP MODAL (FOR HIGH VALUE MANAGER APPROVALS) ─── */}
       {showTwoFactorModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-[24px] border border-slate-200 p-6 max-w-md w-full shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-orange-50 text-[#F2531D] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-orange-100 text-[#F2531D] flex items-center justify-center">
                   <Lock className="w-4 h-4 stroke-[2.2]" />
                 </div>
                 <div>
@@ -376,7 +376,7 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
             </div>
 
             <div className="py-4">
-              <div className="p-3 bg-slate-50 rounded-xl mb-4 text-xs text-slate-600 space-y-1">
+              <div className="p-3 bg-slate-100/80 rounded-xl mb-4 text-xs text-slate-600 space-y-1 shadow-xs">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Ticket:</span>
                   <span className="font-mono font-bold text-slate-800">{ticket.ticketNumber}</span>
@@ -409,7 +409,7 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
                       setTotpCode(e.target.value.replace(/\D/g, ''));
                       setTotpError(false);
                     }}
-                    className="w-full text-center tracking-[0.5em] font-mono text-xl py-2.5 rounded-xl border border-slate-300 focus:border-[#F2531D] focus:ring-1 focus:ring-[#F2531D] outline-none"
+                    className="w-full text-center tracking-[0.5em] font-mono text-xl py-2.5 rounded-xl bg-slate-100/90 focus:bg-white focus:ring-2 focus:ring-[#F2531D]/40 outline-none shadow-xs"
                     autoFocus
                   />
                   <p className="text-[11px] text-slate-400 mt-1 text-center">
@@ -426,7 +426,7 @@ export const CaseWorkspaceHero: React.FC<CaseWorkspaceHeroProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowTwoFactorModal(false)}
-                    className="flex-1 py-2.5 rounded-full border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer"
                   >
                     Cancel
                   </button>

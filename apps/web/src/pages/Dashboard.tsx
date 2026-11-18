@@ -13,7 +13,6 @@ import {
   Clock, 
   AlertTriangle, 
   Sparkles,
-  MessageSquareText,
   User,
   ShieldCheck,
   Zap,
@@ -29,7 +28,8 @@ import {
   ChevronRight,
   TrendingUp,
   Percent,
-  Timer
+  Timer,
+  X
 } from 'lucide-react';
 
 import { 
@@ -133,20 +133,21 @@ export default function Dashboard() {
       {/* ─── SLIM VERTICAL ICON RAIL (LEFT BAR ON DESKTOP, BOTTOM TAB BAR ON MOBILE) ─── */}
       <aside className="w-full md:w-16 lg:w-18 shrink-0 flex md:flex-col items-center justify-between py-2 md:py-6 px-3 md:px-0 z-30 order-2 md:order-1 bg-[#0B0B0F]">
         
-        {/* Top: Stylized 4-Point Blue/White Sparkle Brand Logo */}
+        {/* Top: Sulajh AI Sparkle Badge (Opens Full 24x7 Settlement Chat Desk) */}
         <div className="hidden md:flex items-center justify-center mb-6">
-          <div 
-            onClick={() => setActiveTab('dashboard')}
-            className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 via-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 cursor-pointer hover:scale-105 transition"
-            title="Sulajh AI"
+          <button 
+            type="button"
+            onClick={() => navigate('/chat')}
+            className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 via-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/35 hover:shadow-blue-500/50 cursor-pointer hover:scale-105 active:scale-95 transition"
+            title="Open Sulajh AI 24x7 Settlement Desk"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
             </svg>
-          </div>
+          </button>
         </div>
 
-        {/* Middle: 6 Circular / Round Icon Buttons */}
+        {/* Middle: Circular Icon Navigation Buttons */}
         <div className="flex md:flex-col items-center justify-around md:justify-center w-full md:space-y-4">
           
           {/* 1. Dashboard (Active by default -> Solid White Filled Circle) */}
@@ -205,17 +206,19 @@ export default function Dashboard() {
             <ShieldAlert className="w-4.5 h-4.5 stroke-[2]" />
           </button>
 
-          {/* 5. Switch to Full Chat Workspace */}
+          {/* Mobile Only: Sulajh AI Chat Sparkle Button */}
           <button
             type="button"
             onClick={() => navigate('/chat')}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-white/10 transition-all cursor-pointer"
-            title="Open 24x7 Settlement Chat Desk"
+            className="md:hidden w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 via-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/30 cursor-pointer active:scale-95 transition"
+            title="Open Sulajh AI 24x7 Settlement Desk"
           >
-            <MessageSquareText className="w-4.5 h-4.5 stroke-[2]" />
+            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
+            </svg>
           </button>
 
-          {/* 6. Settings */}
+          {/* 5. Settings */}
           <button
             type="button"
             onClick={() => setActiveTab('settings')}
@@ -267,7 +270,7 @@ export default function Dashboard() {
                 {bankAccount}
               </span>
               <span className="text-slate-300">•</span>
-              <span className="text-[11px] font-medium text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              <span className="text-[11px] font-medium text-emerald-800 font-semibold bg-emerald-100/90 px-2.5 py-0.5 rounded">
                 Autonomous Limits Active
               </span>
             </div>
@@ -312,7 +315,7 @@ export default function Dashboard() {
 
         {/* ─── CALM SETTLEMENT NOTIFICATION BANNER ─────────────────────────────── */}
         {showCalmBanner && (
-          <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-slate-50 border border-blue-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-slide-down shrink-0">
+          <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-slate-50 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-slide-down shrink-0">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Sparkles className="w-4 h-4" />
@@ -344,10 +347,10 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={() => setShowCalmBanner(false)}
-                className="text-slate-400 hover:text-slate-600 text-xs px-2 py-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 text-xs px-2 py-1 cursor-pointer flex items-center justify-center"
                 title="Dismiss banner"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -413,7 +416,7 @@ export default function Dashboard() {
               />
             </div>
 
-            <div className="lg:col-span-4 bg-white border border-slate-200/90 rounded-[24px] p-5.5 flex flex-col justify-between">
+            <div className="lg:col-span-4 bg-white rounded-[24px] p-5.5 flex flex-col justify-between shadow-xs">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-semibold text-slate-500">
@@ -439,7 +442,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+              <div className="mt-4 pt-3 flex items-center justify-between text-[11px] text-slate-400 font-mono">
                 <span>{bankAccount}</span>
                 <span className="text-blue-600 font-semibold cursor-pointer hover:underline" onClick={() => navigate('/chat')}>
                   Open Full Chat Desk →
@@ -469,28 +472,28 @@ export default function Dashboard() {
 
             {/* Bank Delivery Speed & Efficiency Comparison */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-5 rounded-2xl bg-slate-100/70 shadow-xs space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-500">HDFC Bank (Primary Node)</span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">99.4% On-time</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">99.4% On-time</span>
                 </div>
                 <div className="text-xl font-extrabold text-slate-950">2.1 hrs</div>
                 <p className="text-[11px] text-slate-500">Average UTR clearing delivery timeline</p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-5 rounded-2xl bg-slate-100/70 shadow-xs space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-500">ICICI Bank Backup</span>
-                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px]">98.1% On-time</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px]">98.1% On-time</span>
                 </div>
                 <div className="text-xl font-extrabold text-slate-950">3.4 hrs</div>
                 <p className="text-[11px] text-slate-500">Average UTR clearing delivery timeline</p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-5 rounded-2xl bg-slate-100/70 shadow-xs space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-500">State Bank of India</span>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">91.8% On-time</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">91.8% On-time</span>
                 </div>
                 <div className="text-xl font-extrabold text-slate-950">8.5 hrs</div>
                 <p className="text-[11px] text-slate-500">Requires IFSC auto-rerouting on merger days</p>
@@ -505,7 +508,7 @@ export default function Dashboard() {
         {activeTab === 'passbook' && (
           <div className="space-y-5">
             {/* Filter Pills */}
-            <div className="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-slate-100">
+            <div className="flex items-center justify-between flex-wrap gap-3 pb-2">
               <div className="flex items-center gap-2">
                 {(['all', 'paid', 'delayed', 'failed'] as const).map((flt) => (
                   <button
@@ -531,10 +534,10 @@ export default function Dashboard() {
             </div>
 
             {/* Comprehensive Table */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-2xs">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50/80 text-slate-500 font-semibold border-b border-slate-200/70">
+                  <thead className="bg-slate-100/80 text-slate-600 font-semibold">
                     <tr>
                       <th className="py-3 px-4">Payout Date</th>
                       <th className="py-3 px-4">UTR / Ref ID</th>
@@ -589,7 +592,7 @@ export default function Dashboard() {
         {/* ─── TAB 4: DISPUTES & DEFENSE ───────────────────────────────────────── */}
         {activeTab === 'disputes' && (
           <div className="space-y-6">
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-200/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-rose-50 to-amber-50 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-rose-600" />
@@ -611,7 +614,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {OPEN_DISPUTES.map((disp: DisputeItem) => (
-                <div key={disp.disputeId} className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-slate-300 transition space-y-3">
+                <div key={disp.disputeId} className="p-5 rounded-2xl bg-slate-100/70 shadow-xs hover:bg-slate-100 transition space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
                       <span className="font-mono text-xs text-slate-400">{disp.disputeId}</span>
@@ -622,7 +625,7 @@ export default function Dashboard() {
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs text-slate-600 pt-2 border-t border-slate-200/60">
+                  <div className="flex justify-between items-center text-xs text-slate-600 pt-2">
                     <span>Disputed Amount:</span>
                     <span className="font-extrabold text-slate-950 text-sm">₹{disp.amount.toLocaleString('en-IN')}</span>
                   </div>
@@ -651,7 +654,7 @@ export default function Dashboard() {
           <div className="max-w-3xl space-y-6">
             
             {/* Merchant Identity */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-100/70 shadow-xs space-y-4">
               <h3 className="font-extrabold text-slate-950 text-base flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-slate-600" />
                 <span>Store Profile & Settlement Node</span>
@@ -686,7 +689,7 @@ export default function Dashboard() {
             </div>
 
             {/* Autonomous Policy Guardrails */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-100/70 shadow-xs space-y-4">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-extrabold text-slate-950 text-base flex items-center gap-2">
@@ -743,7 +746,7 @@ export default function Dashboard() {
         )}
 
         {/* ─── QUIET FOOTER ────────────────────────────────────────────────────── */}
-        <footer className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2 shrink-0">
+        <footer className="mt-8 pt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
             <span>Simulated Paytm data · Production Architecture</span>

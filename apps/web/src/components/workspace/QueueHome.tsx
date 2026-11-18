@@ -69,12 +69,12 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeQueueFilter === 'needs_me'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>Needs me</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeQueueFilter === 'needs_me' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeQueueFilter === 'needs_me' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 12
               </span>
@@ -86,12 +86,12 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeQueueFilter === 'ai_resolved'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>AI resolved</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeQueueFilter === 'ai_resolved' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeQueueFilter === 'ai_resolved' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 126
               </span>
@@ -103,12 +103,12 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeQueueFilter === 'escalated'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>Escalated by me</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeQueueFilter === 'escalated' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeQueueFilter === 'escalated' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 6
               </span>
@@ -120,12 +120,12 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeQueueFilter === 'waiting'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>Waiting on merchant</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeQueueFilter === 'waiting' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeQueueFilter === 'waiting' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 11
               </span>
@@ -160,7 +160,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
           <div className="flex items-center gap-2 self-end mt-2 sm:mt-0">
             <button
               type="button"
-              className="px-4 py-2.5 rounded-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+              className="px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
               <Filter className="w-3.5 h-3.5" />
               <span>Filters</span>
@@ -184,10 +184,10 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
         {/* ─── COLUMN 1: QUEUE TABLE (WIDE, 6 COLS) ─── */}
-        <div className="lg:col-span-6 bg-white rounded-[24px] border border-slate-200/90 p-5 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-6 bg-white rounded-[24px] p-5 shadow-xs flex flex-col justify-between">
           
           <div>
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <div className="flex items-center justify-between mb-3 pb-2">
               <h3 className="font-['Outfit',sans-serif] font-bold text-base text-slate-900">
                 Incoming Decision Queue
               </h3>
@@ -208,7 +208,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
                   onClick={() => setSelectedCategory(f.id)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                     selectedCategory === f.id
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-slate-900 text-white shadow-2xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -218,24 +218,24 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
             </div>
 
             {/* Grouped Bank Incident Row (Expandable) */}
-            <div className="mb-3 rounded-2xl bg-amber-50/70 border border-amber-200/80 p-3 text-xs">
+            <div className="mb-3 rounded-2xl bg-amber-100/80 p-3 text-xs shadow-xs">
               <div 
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setExpandedIncident(!expandedIncident)}
               >
                 <div className="flex items-center gap-2">
-                  <AlertOctagon className="w-4 h-4 text-amber-600 shrink-0" />
+                  <AlertOctagon className="w-4 h-4 text-amber-700 shrink-0" />
                   <span className="font-bold text-amber-950">
                     HDFC Bank Switch Outage · 42 cases grouped
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] font-bold text-amber-700">
+                <div className="flex items-center gap-1 text-[11px] font-bold text-amber-800">
                   <span>{expandedIncident ? 'Collapse' : 'Expand'}</span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expandedIncident ? 'rotate-180' : ''}`} />
                 </div>
               </div>
               {expandedIncident && (
-                <div className="mt-2.5 pt-2 border-t border-amber-200/60 text-[11px] text-amber-900 space-y-1">
+                <div className="mt-2.5 pt-2 text-[11px] text-amber-950 space-y-1">
                   <p>Branch merger caused 42 payouts to reject on old IFSC codes. Sulajh AI resolved all 42 to active code HDFC0001234.</p>
                   <div className="pt-1 flex justify-end">
                     <button
@@ -255,10 +255,10 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
                 <div
                   key={t.id}
                   onClick={() => onSelectTicket(t)}
-                  className="p-3.5 rounded-2xl border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50 transition cursor-pointer flex items-center justify-between gap-3 group"
+                  className="p-3.5 rounded-2xl bg-slate-100/70 hover:bg-slate-200/70 transition cursor-pointer flex items-center justify-between gap-3 group shadow-2xs"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center shrink-0 group-hover:bg-white group-hover:shadow-xs transition">
+                    <div className="w-9 h-9 rounded-full bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center shrink-0 group-hover:bg-white group-hover:shadow-xs transition">
                       {t.merchantName.slice(0, 2).toUpperCase()}
                     </div>
                     <div className="min-w-0">
@@ -282,7 +282,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
                       Prepared by Sulajh
                     </span>
 
-                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 transition" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700 transition" />
                   </div>
                 </div>
               ))}
@@ -291,7 +291,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
           </div>
 
           {/* Footer Shortcuts */}
-          <div className="pt-3 mt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+          <div className="pt-3 mt-4 flex items-center justify-between text-[11px] text-slate-400">
             <span>Shortcuts: <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-600 font-mono">J / K</kbd> navigate, <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-600 font-mono">A</kbd> approve, <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-600 font-mono">R</kbd> reject</span>
             <span>Simulated Paytm data</span>
           </div>
@@ -299,8 +299,8 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
         </div>
 
         {/* ─── COLUMN 2: TODAY'S FLOW (3 COLS) ─── */}
-        <div className="lg:col-span-3 bg-white rounded-[24px] border border-slate-200/90 p-5 shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-2">
+        <div className="lg:col-span-3 bg-white rounded-[24px] p-5 shadow-xs space-y-4">
+          <div className="pb-2">
             <h3 className="font-['Outfit',sans-serif] font-bold text-base text-slate-900">
               Today's Flow
             </h3>
@@ -326,7 +326,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
                     •
                   </div>
                 ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-300 text-slate-400 flex items-center justify-center shrink-0 text-[10px]">
+                  <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center shrink-0 text-[10px]">
                     ○
                   </div>
                 )}
@@ -341,7 +341,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
           </div>
 
           {/* Small Stacked Bar: AI vs Human Resolutions */}
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div className="p-3 rounded-2xl bg-slate-100/80 shadow-xs">
             <div className="flex items-center justify-between text-xs font-bold text-slate-800 mb-2">
               <span>Resolutions Split</span>
               <span className="text-violet-700 text-[11px]">73.4% Deflection</span>
@@ -361,7 +361,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
         <div className="lg:col-span-3 space-y-4">
           
           {/* Approval Limit Card */}
-          <div className="bg-white rounded-[24px] border border-slate-200/90 p-5 shadow-sm space-y-3">
+          <div className="bg-white rounded-[24px] p-5 shadow-xs space-y-3">
             <h3 className="font-['Outfit',sans-serif] font-bold text-base text-slate-900">
               Your Authority Limit
             </h3>
@@ -375,14 +375,14 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
               rightCaption="Cap: ₹25k"
             />
 
-            <div className="pt-2 border-t border-slate-100 text-xs">
+            <div className="pt-2 text-xs">
               <span className="font-bold text-slate-700 block mb-1">Escalated to Ops Manager (2):</span>
               <div className="space-y-1.5 text-[11px] text-slate-600 font-mono">
-                <div className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg">
+                <div className="flex items-center justify-between p-1.5 bg-slate-100/80 rounded-lg">
                   <span>#case-4 · Ganesh Elec</span>
                   <span className="font-bold text-slate-900">₹45,000</span>
                 </div>
-                <div className="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg">
+                <div className="flex items-center justify-between p-1.5 bg-slate-100/80 rounded-lg">
                   <span>#case-9 · Kalyan Gold</span>
                   <span className="font-bold text-slate-900">₹82,000</span>
                 </div>
@@ -391,7 +391,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
           </div>
 
           {/* Checklist before closing case */}
-          <div className="bg-white rounded-[24px] border border-slate-200/90 p-5 shadow-sm space-y-2.5">
+          <div className="bg-white rounded-[24px] p-5 shadow-xs space-y-2.5">
             <h3 className="font-['Outfit',sans-serif] font-bold text-sm text-slate-900">
               Before You Close a Case:
             </h3>
@@ -415,7 +415,7 @@ export const QueueHome: React.FC<QueueHomeProps> = ({
             </div>
 
             {/* Pale Blue Info Note Strip at Bottom */}
-            <div className="mt-3 p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/60 flex items-start gap-2 text-[11px] text-blue-900 leading-relaxed">
+            <div className="mt-3 p-2.5 rounded-xl bg-blue-100/80 flex items-start gap-2 text-[11px] text-blue-950 leading-relaxed shadow-xs">
               <Info className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
               <span>Cases above ₹25,000 auto-route to Ops Manager with 4-Eye Approval.</span>
             </div>

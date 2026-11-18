@@ -56,10 +56,10 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[24px] border border-slate-200/90 p-4 sm:p-5 shadow-sm flex flex-col justify-between h-full thin-scroll">
+    <div className="bg-white rounded-[24px] p-4 sm:p-5 shadow-xs flex flex-col justify-between h-full thin-scroll">
       
       {/* ─── CARD HEADER (MIRRORS PROGRESS HEADER) ─── */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 shrink-0">
+      <div className="flex items-center justify-between pb-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
             <FileText className="w-3.5 h-3.5 stroke-[2.2]" />
@@ -75,7 +75,7 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
         <button
           type="button"
           onClick={() => setShowAiDetails(!showAiDetails)}
-          className="w-8 h-8 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition cursor-pointer"
+          className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer shadow-2xs"
           title="Toggle AI Tool Calling Details"
         >
           {showAiDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -124,8 +124,8 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
 
             {/* Expandable Tool-Calls Row in Violet */}
             {showAiDetails && (
-              <div className="mt-2 p-2.5 rounded-xl bg-violet-50/70 border border-violet-200/80 text-[11px] space-y-1 font-mono text-slate-700 animate-slide-down">
-                <div className="flex items-center justify-between text-violet-800 font-bold">
+              <div className="mt-2 p-2.5 rounded-xl bg-violet-100/70 text-[11px] space-y-1 font-mono text-slate-800 animate-slide-down shadow-2xs">
+                <div className="flex items-center justify-between text-violet-900 font-bold">
                   <span>tool: get_settlement_status()</span>
                   <span className="text-emerald-700 font-semibold">allow (₹{amount.toFixed(2)} ≤ ₹25,000)</span>
                 </div>
@@ -228,7 +228,7 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
           </div>
         ) : (
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full border-2 border-slate-300 text-slate-400 font-bold text-[11px] flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-500 font-bold text-[11px] flex items-center justify-center shrink-0">
               6
             </div>
             <div className="flex-1">
@@ -246,35 +246,35 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
       </div>
 
       {/* ─── GREY BLOCK: PROOF COLLECTED (MIRRORS DISPATCH PROOF STRIP) ─── */}
-      <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 my-2 shrink-0">
+      <div className="p-3 rounded-2xl bg-slate-100/80 my-2 shrink-0 shadow-xs">
         <span className="text-[11px] font-bold text-slate-800 block mb-2">
           Dispatch Proof & Ledger Chips:
         </span>
         <div className="flex flex-wrap gap-1.5">
-          <span className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
+          <span className="px-2.5 py-1 rounded-xl bg-white text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
             <Check className="w-3 h-3 text-emerald-600" /> Settlement verified
           </span>
-          <span className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
+          <span className="px-2.5 py-1 rounded-xl bg-white text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
             <Check className="w-3 h-3 text-emerald-600" /> 3 records matched
           </span>
-          <span className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
+          <span className="px-2.5 py-1 rounded-xl bg-white text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
             <ShieldCheck className="w-3 h-3 text-blue-600" /> Policy: allow
           </span>
-          <span className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
+          <span className="px-2.5 py-1 rounded-xl bg-white text-[11px] font-semibold text-slate-700 flex items-center gap-1 shadow-2xs">
             <Check className="w-3 h-3 text-emerald-600" /> Tally matches
           </span>
         </div>
       </div>
 
       {/* ─── INTERACTIVE REPLY COMPOSER ─── */}
-      <div className="pt-2.5 border-t border-slate-100 shrink-0">
+      <div className="pt-2.5 shrink-0">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
             <Sparkles className="w-3.5 h-3.5 text-violet-600" /> AI Suggested Replies:
           </span>
           {replySent && (
-            <span className="text-[11px] font-bold text-emerald-600 animate-pulse">
-              Sent to merchant WhatsApp & Soundbox ✓
+            <span className="text-[11px] font-bold text-emerald-700 animate-pulse flex items-center gap-1">
+              Sent to merchant WhatsApp & Soundbox <Check className="w-3 h-3 stroke-[3]" />
             </span>
           )}
         </div>
@@ -285,10 +285,10 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
               key={i}
               type="button"
               onClick={() => handleSelectOption(i)}
-              className={`px-3 py-1 rounded-full text-[11px] font-semibold text-left truncate max-w-[140px] border transition cursor-pointer ${
+              className={`px-3 py-1 rounded-full text-[11px] font-semibold text-left truncate max-w-[140px] transition cursor-pointer ${
                 selectedReplyIndex === i
-                  ? 'bg-[#12141A] text-white border-[#12141A] shadow-xs'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                  ? 'bg-[#12141A] text-white shadow-xs'
+                  : 'bg-slate-200/80 text-slate-700 hover:bg-slate-300/80'
               }`}
             >
               Option {i + 1}
@@ -301,7 +301,7 @@ export const CaseTimeline: React.FC<CaseTimelineProps> = ({
             rows={2}
             value={selectedReply}
             onChange={(e) => setSelectedReply(e.target.value)}
-            className="w-full p-2.5 pr-20 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition resize-none leading-relaxed"
+            className="w-full p-2.5 pr-20 text-xs text-slate-800 bg-slate-100/80 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition resize-none leading-relaxed shadow-xs"
           />
           <button
             type="button"

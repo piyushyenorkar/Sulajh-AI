@@ -15,7 +15,7 @@ export const ActivityHeatmap: React.FC = () => {
   const totalPaid = data.filter((d) => d.status === 'paid').length;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-[24px] p-5.5 flex flex-col justify-between h-full relative group">
+    <div className="bg-white rounded-[24px] p-5.5 flex flex-col justify-between h-full relative group shadow-xs">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-slate-500">
@@ -75,7 +75,7 @@ export const ActivityHeatmap: React.FC = () => {
       </div>
 
       {/* Month Labels Below */}
-      <div className="flex justify-between items-center text-[10px] font-semibold text-slate-400 mt-4 pt-2 border-t border-slate-100 uppercase tracking-wider select-none">
+      <div className="flex justify-between items-center text-[10px] font-semibold text-slate-400 mt-4 pt-2 uppercase tracking-wider select-none">
         <span>Aug</span>
         <span>Sep</span>
         <span>Oct</span>

@@ -44,7 +44,7 @@ export const DarkChartCard: React.FC<DarkChartCardProps> = () => {
   const activePoint = hoverIndex !== null ? points[hoverIndex] : points[points.length - 2] || points[0];
 
   return (
-    <div className="bg-[#111217] border border-white/5 rounded-[24px] p-6 text-white flex flex-col justify-between relative overflow-hidden group shadow-lg">
+    <div className="bg-slate-900 rounded-[24px] p-6 text-white flex flex-col justify-between relative overflow-hidden group shadow-lg">
       {/* Background Soft Glow */}
       <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[90px] pointer-events-none" />
 

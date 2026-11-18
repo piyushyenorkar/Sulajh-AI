@@ -33,13 +33,18 @@ export class VoiceService {
 
     const errors: string[] = [];
 
-    // 1. Try Gnani
+    // 1. Try Gnani (Primary)
     if (this.gnani.isAvailable()) {
       try {
         logger.info({ provider: 'gnani' }, 'Attempting speech transcription with Gnani AI');
         const res = await this.gnani.transcribe(audioBuffer, mimeType, languageHint);
-        logger.info({ provider: 'gnani', transcript: res.transcript }, 'Gnani STT successfully transcribed audio');
-        return res;
+        if (res && res.transcript && res.transcript.trim()) {
+          logger.info({ provider: 'gnani', transcript: res.transcript }, 'Gnani STT successfully transcribed audio');
+          return res;
+        } else {
+          logger.warn({ provider: 'gnani' }, 'Gnani returned empty transcript, attempting Sarvam fallback');
+          errors.push('Gnani STT: Empty transcript returned');
+        }
       } catch (err: any) {
         errors.push(`Gnani STT: ${err?.message || err}`);
         logger.warn({ gnaniError: err?.message }, 'Gnani STT failed, falling back to Sarvam');
@@ -49,10 +54,16 @@ export class VoiceService {
       errors.push('Gnani STT: Not configured (missing GNANI_API_KEY)');
     }
 
-    // 2. Try Sarvam
+    // 2. Try Sarvam (Fallback)
     if (this.sarvam.isAvailable()) {
       try {
-        return await this.sarvam.transcribe(audioBuffer, mimeType, languageHint);
+        const res = await this.sarvam.transcribe(audioBuffer, mimeType, languageHint);
+        if (res && res.transcript && res.transcript.trim()) {
+          logger.info({ provider: 'sarvam', transcript: res.transcript }, 'Sarvam STT successfully transcribed audio fallback');
+          return res;
+        } else {
+          errors.push('Sarvam STT: Empty transcript returned');
+        }
       } catch (err: any) {
         errors.push(`Sarvam STT: ${err?.message || err}`);
         logger.warn({ err: err?.message }, 'Sarvam STT failed');

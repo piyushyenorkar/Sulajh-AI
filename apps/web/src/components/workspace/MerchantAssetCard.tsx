@@ -41,11 +41,11 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[24px] border border-slate-200/90 p-4 sm:p-5 shadow-sm flex flex-col justify-between h-full thin-scroll">
+    <div className="bg-white rounded-[24px] p-4 sm:p-5 shadow-xs flex flex-col justify-between h-full thin-scroll">
       
       <div>
         {/* ─── SECTION 1: MERCHANT ON FILE ─── */}
-        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 shrink-0">
+        <div className="flex items-center justify-between pb-2.5 shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
               <Store className="w-3.5 h-3.5 stroke-[2.2]" />
@@ -60,7 +60,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
 
           <button
             type="button"
-            className="w-7 h-7 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-900 transition cursor-pointer"
+            className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition cursor-pointer shadow-2xs"
             title="Open merchant full dossier"
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -68,7 +68,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
         </div>
 
         {/* Merchant Item Row (Mirrors CAT Excavator in Reference) */}
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 my-2.5 flex items-center gap-2.5 shrink-0">
+        <div className="p-3 rounded-2xl bg-slate-100/80 my-2.5 flex items-center gap-2.5 shrink-0 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold text-sm flex items-center justify-center shadow-xs shrink-0">
             {merchantName.slice(0, 2).toUpperCase()}
           </div>
@@ -88,7 +88,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
 
         {/* Three Stat Tiles (Mirrors Hour meter, Fuel, Damage in Reference) */}
         <div className="grid grid-cols-3 gap-2 text-center mb-3 shrink-0">
-          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+          <div className="p-2 rounded-xl bg-slate-100/80 shadow-xs">
             <span className="text-[9px] font-semibold text-slate-400 block uppercase tracking-wider">
               Open Disputes
             </span>
@@ -97,7 +97,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
             </span>
           </div>
 
-          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+          <div className="p-2 rounded-xl bg-slate-100/80 shadow-xs">
             <span className="text-[9px] font-semibold text-slate-400 block uppercase tracking-wider">
               Failed Payouts
             </span>
@@ -106,7 +106,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
             </span>
           </div>
 
-          <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+          <div className="p-2 rounded-xl bg-slate-100/80 shadow-xs">
             <span className="text-[9px] font-semibold text-slate-400 block uppercase tracking-wider">
               Risk Flag
             </span>
@@ -117,7 +117,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
         </div>
 
         {/* ─── SECTION 2: BEFORE YOU APPROVE (MIRRORS ON ARRIVAL) ─── */}
-        <div className="pt-2.5 border-t border-slate-100 shrink-0">
+        <div className="pt-2.5 shrink-0">
           <div className="flex items-center gap-1.5 mb-2">
             <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
             <h3 className="font-['Outfit',sans-serif] font-bold text-xs sm:text-sm text-slate-900 leading-tight">
@@ -144,7 +144,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
                       <CheckSquare className="w-3 h-3" />
                     </div>
                   ) : (
-                    <div className="w-3.5 h-3.5 rounded-md border border-slate-300 group-hover:border-slate-400 bg-white" />
+                    <div className="w-3.5 h-3.5 rounded-md bg-slate-200 group-hover:bg-slate-300" />
                   )}
                 </div>
                 <span className={`leading-tight text-[11px] sm:text-xs ${checkedItems[idx] ? 'text-slate-900 font-medium' : 'text-slate-500'}`}>
@@ -157,7 +157,7 @@ export const MerchantAssetCard: React.FC<MerchantAssetCardProps> = ({
       </div>
 
       {/* Pale Blue Info Note Strip at Bottom */}
-      <div className="mt-3 p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/80 flex items-start gap-2 text-[11px] text-blue-950 leading-relaxed shrink-0">
+      <div className="mt-3 p-2.5 rounded-xl bg-blue-100/80 flex items-start gap-2 text-[11px] text-blue-950 leading-relaxed shrink-0 shadow-xs">
         <Info className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
         <span>
           Approving re-initiates the payout and notifies the merchant. Recorded in the <strong>append-only audit ledger</strong>.

@@ -86,7 +86,8 @@ export class GnaniVoiceProvider implements VoiceProvider {
     }
 
     const voice = voicePreference || 'Shivani';
-    logger.info({ provider: 'gnani', voice, textLength: cleanText.length }, 'Invoking Gnani TTS');
+    const langCode = this.mapLanguageCode(languageHint, false);
+    logger.info({ provider: 'gnani', voice, langCode, textLength: cleanText.length }, 'Invoking Gnani TTS');
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
@@ -102,6 +103,7 @@ export class GnaniVoiceProvider implements VoiceProvider {
           model: 'timbre-v3.0',
           text: cleanText,
           voice,
+          language: langCode,
           audio_config: {
             container: 'wav',
             encoding: 'linear_pcm',

@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   Radio,
   Receipt,
-  QrCode
+  QrCode,
+  Loader2
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { PaytmLogo } from '../components/PaytmLogo';
@@ -44,10 +45,10 @@ function RealWorkingWallClock() {
   return (
     <div className="absolute top-12 right-7 select-none z-10">
       {/* Outer Rim / Bezel (Directly Mounted on Wall, No Hanging Pin) */}
-      <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-[#1A2332] p-1.5 shadow-[0_14px_28px_rgba(0,0,0,0.25)] border-[3.5px] border-[#334155] flex items-center justify-center relative">
+      <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-[#1A2332] p-1.5 shadow-[0_14px_28px_rgba(0,0,0,0.25)] flex items-center justify-center relative">
         
         {/* Clock Inner Face */}
-        <div className="w-full h-full rounded-full bg-[#FAFCFB] relative flex items-center justify-center shadow-inner overflow-hidden border border-slate-200">
+        <div className="w-full h-full rounded-full bg-[#FAFCFB] relative flex items-center justify-center shadow-inner overflow-hidden">
           
           {/* Dial Glass Reflection Sheen */}
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-slate-100/60 pointer-events-none" />
@@ -89,7 +90,7 @@ function RealWorkingWallClock() {
           </div>
 
           {/* Center Pivot Nut */}
-          <div className="w-2.5 h-2.5 rounded-full bg-rose-600 border border-white shadow-xs z-20 relative" />
+          <div className="w-2.5 h-2.5 rounded-full bg-rose-600 shadow-xs z-20 relative" />
         </div>
       </div>
     </div>
@@ -292,7 +293,7 @@ export default function Login() {
       {/* ─── HEADER ─── */}
       <header className="absolute top-0 inset-x-0 z-30 px-6 sm:px-8 py-4 flex items-center justify-between pointer-events-none">
         <div className="pointer-events-auto flex items-center gap-3">
-          <div className="px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-emerald-200/90 flex items-center gap-2 shadow-xs">
+          <div className="px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md flex items-center gap-2 shadow-xs">
             <PaytmLogo className="h-5 w-auto" />
             <div className="h-3.5 w-px bg-slate-300" />
             <span className="text-xs font-bold text-[#002970] tracking-tight">Sulajh.AI</span>
@@ -323,7 +324,7 @@ export default function Login() {
             <div className="flex flex-col items-center">
               {/* Wall Pin */}
               <div className="relative flex flex-col items-center z-10">
-                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
                   <div className="w-1 h-1 rounded-full bg-white/80" />
                 </div>
                 <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
@@ -337,12 +338,12 @@ export default function Login() {
               </svg>
 
               {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
-              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <Zap className="w-4 h-4 stroke-[2.5]" />
                   </div>
-                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded-md">
                     T+0 SLA
                   </span>
                 </div>
@@ -357,7 +358,7 @@ export default function Login() {
             <div className="flex flex-col items-center">
               {/* Wall Pin */}
               <div className="relative flex flex-col items-center z-10">
-                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
                   <div className="w-1 h-1 rounded-full bg-white/80" />
                 </div>
                 <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
@@ -371,12 +372,12 @@ export default function Login() {
               </svg>
 
               {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
-              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <Receipt className="w-4 h-4 stroke-[2.5]" />
                   </div>
-                  <span className="text-[9px] font-bold text-teal-700 bg-teal-50 border border-teal-200/60 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[9px] font-bold text-teal-800 bg-teal-100/90 px-1.5 py-0.5 rounded-md">
                     100% Audit
                   </span>
                 </div>
@@ -391,7 +392,7 @@ export default function Login() {
             <div className="flex flex-col items-center">
               {/* Wall Pin */}
               <div className="relative flex flex-col items-center z-10">
-                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-900/90 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_2px_4px_rgba(0,0,0,0.35)] flex items-center justify-center">
                   <div className="w-1 h-1 rounded-full bg-white/80" />
                 </div>
                 <div className="w-2.5 h-0.5 bg-black/20 blur-[0.5px] rounded-full mt-0.5" />
@@ -405,12 +406,12 @@ export default function Login() {
               </svg>
 
               {/* Frame Card with strictly IDENTICAL dimensions: w-[172px] h-[96px] */}
-              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] border-[3px] border-slate-200/95 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
+              <div className="w-[172px] h-[96px] bg-white rounded-2xl p-3 shadow-[0_12px_28px_-6px_rgba(20,50,30,0.22)] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 cursor-default flex flex-col justify-between shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
                     <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
                   </div>
-                  <span className="text-[9px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200/60 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[9px] font-bold text-indigo-800 bg-indigo-100/90 px-1.5 py-0.5 rounded-md">
                     NPCI Guard
                   </span>
                 </div>
@@ -431,19 +432,19 @@ export default function Login() {
             
             {/* 3D Character */}
             <div className="relative flex flex-col items-center -mb-7 z-10">
-              <div className="w-16 h-18 rounded-[20px] bg-[#E5B596] shadow-md relative flex flex-col items-center border border-[#D4A384]">
+              <div className="w-16 h-18 rounded-[20px] bg-[#E5B596] shadow-md relative flex flex-col items-center">
                 <div className="absolute -top-1 w-17 h-8 bg-[#4A3225] rounded-t-2xl shadow-xs" />
                 <div className="flex items-center gap-1 mt-7 z-10">
-                  <div className="w-4 h-3.5 rounded-sm border-2 border-slate-800 bg-white/30" />
+                  <div className="w-4 h-3.5 rounded-sm bg-slate-800 p-0.5"><div className="w-full h-full bg-white/40 rounded-xs" /></div>
                   <div className="w-1.5 h-0.5 bg-slate-800" />
-                  <div className="w-4 h-3.5 rounded-sm border-2 border-slate-800 bg-white/30" />
+                  <div className="w-4 h-3.5 rounded-sm bg-slate-800 p-0.5"><div className="w-full h-full bg-white/40 rounded-xs" /></div>
                 </div>
                 <div className="w-8 h-4 bg-[#4A3225] rounded-b-xl mt-1.5 flex items-center justify-center">
                   <div className="w-3.5 h-1 bg-white rounded-full" />
                 </div>
               </div>
-              <div className="w-26 h-22 rounded-t-3xl bg-[#84CC16] shadow-lg border-t-2 border-[#A3E635] flex items-center justify-center relative">
-                <div className="w-6 h-6 rounded-full bg-indigo-600 border border-indigo-700 shadow-xs" />
+              <div className="w-26 h-22 rounded-t-3xl bg-[#84CC16] shadow-lg flex items-center justify-center relative">
+                <div className="w-6 h-6 rounded-full bg-indigo-600 shadow-xs" />
               </div>
             </div>
 
@@ -451,11 +452,11 @@ export default function Login() {
             <div className="relative z-20 flex flex-col items-center">
               
               {/* Desk Top */}
-              <div className="w-92 h-14 rounded-t-[22px] bg-gradient-to-r from-[#D98E52] via-[#E8A56A] to-[#C97C3E] border-t-2 border-[#FBD8B3] shadow-md relative flex items-center justify-between px-7">
+              <div className="w-92 h-14 rounded-t-[22px] bg-gradient-to-r from-[#D98E52] via-[#E8A56A] to-[#C97C3E] shadow-md relative flex items-center justify-between px-7">
                 
                 {/* Laptop */}
-                <div className="w-34 h-22 rounded-t-xl bg-slate-200 border-2 border-slate-400 shadow-md relative flex flex-col items-center justify-center -mt-10">
-                  <div className="w-30 h-16 rounded-lg bg-slate-900 border border-slate-700 flex flex-col items-center justify-center text-teal-400 font-mono text-[9px] font-bold">
+                <div className="w-34 h-22 rounded-t-xl bg-slate-200 shadow-md relative flex flex-col items-center justify-center -mt-10">
+                  <div className="w-30 h-16 rounded-lg bg-slate-900 flex flex-col items-center justify-center text-teal-400 font-mono text-[9px] font-bold">
                     <span>PAYOUT SETTLED</span>
                     <span className="text-white text-[10px] mt-0.5">₹4,735.54</span>
                   </div>
@@ -464,7 +465,7 @@ export default function Login() {
 
                 {/* ─── PAYTM SOUNDBOX (ORIGINAL SIMPLE BLUE + QR ADDED) ─── */}
                 <div className="flex items-end gap-3.5 -mt-3">
-                  <div className="w-12 h-14 rounded-xl bg-[#00BAF2] border-2 border-white shadow-md flex flex-col items-center justify-between p-1">
+                  <div className="w-12 h-14 rounded-xl bg-[#00BAF2] shadow-md flex flex-col items-center justify-between p-1.5">
                     <div className="w-8 h-6 rounded bg-[#002970] flex items-center justify-center">
                       <Radio className="w-4 h-4 text-white animate-pulse" />
                     </div>
@@ -476,21 +477,21 @@ export default function Login() {
 
                   {/* Coffee Mug */}
                   <div className="w-8 h-9 rounded-b-lg rounded-t-sm bg-indigo-600 shadow-md relative flex items-center justify-center">
-                    <div className="absolute -top-3 w-3 h-3 border-r-2 border-white/60 rounded-full animate-bounce" />
-                    <div className="w-3 h-4 rounded-r-md border-2 border-indigo-600 absolute -right-3" />
+                    <div className="absolute -top-3 w-3 h-3 rounded-full animate-bounce bg-white/40" />
+                    <div className="w-3 h-4 rounded-r-md bg-indigo-700 absolute -right-2.5" />
                   </div>
                 </div>
 
               </div>
 
               {/* Desk Front Apron */}
-              <div className="w-92 h-14 rounded-b-[18px] bg-gradient-to-r from-[#8C4F22] via-[#A05C29] to-[#7B4118] border-b-4 border-[#5C2E0E] shadow-2xl relative">
+              <div className="w-92 h-14 rounded-b-[18px] bg-gradient-to-r from-[#8C4F22] via-[#A05C29] to-[#7B4118] shadow-2xl relative">
                 <div className="absolute top-10 left-8 flex flex-col items-center">
-                  <div className="w-3 h-20 bg-white shadow-md border-r border-slate-300" />
+                  <div className="w-3 h-20 bg-white shadow-md" />
                   <div className="w-3.5 h-2 bg-slate-800 rounded-b-md" />
                 </div>
                 <div className="absolute top-10 right-8 flex flex-col items-center">
-                  <div className="w-3 h-20 bg-white shadow-md border-r border-slate-300" />
+                  <div className="w-3 h-20 bg-white shadow-md" />
                   <div className="w-3.5 h-2 bg-slate-800 rounded-b-md" />
                 </div>
               </div>
@@ -505,14 +506,14 @@ export default function Login() {
                 <div className="w-3.5 h-28 rounded-t-full bg-emerald-500 shadow-sm" />
                 <div className="w-3 h-18 rounded-t-full bg-emerald-700 shadow-sm" />
               </div>
-              <div className="w-13 h-11 bg-slate-200 rounded-b-xl border-t-2 border-slate-300 shadow-md" />
+              <div className="w-13 h-11 bg-slate-200 rounded-b-xl shadow-md" />
             </div>
 
           </div>
 
           {/* ─── BOTTOM TRUST BAR ─── */}
           <div className="relative z-10 w-full flex justify-center items-center pb-2">
-            <div className="flex items-center gap-4 text-xs font-semibold text-emerald-100/95 bg-emerald-950/75 backdrop-blur-md py-2 px-5 rounded-full border border-emerald-800/40 shadow-sm">
+            <div className="flex items-center gap-4 text-xs font-semibold text-emerald-100/95 bg-emerald-950/75 backdrop-blur-md py-2 px-5 rounded-full shadow-sm">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>RBI Grievance Redressal</span>
@@ -535,7 +536,7 @@ export default function Login() {
         {/* ═══ RIGHT SIDE: AUTH CARD (PERFECTLY CENTERED WITH EQUAL TOP & BOTTOM GAPS) ═══ */}
         <section className="col-span-1 lg:col-span-5 h-full p-3 sm:p-5 flex items-center justify-center z-20">
           
-          <div className="w-full max-w-[420px] h-[590px] max-h-[88vh] bg-white rounded-[32px] sm:rounded-[36px] shadow-[0_20px_50px_-12px_rgba(20,50,30,0.30)] border border-white/80 overflow-hidden relative flex flex-col text-slate-900 my-auto">
+          <div className="w-full max-w-[420px] h-[590px] max-h-[88vh] bg-white rounded-[32px] sm:rounded-[36px] shadow-[0_20px_50px_-12px_rgba(20,50,30,0.30)] overflow-hidden relative flex flex-col text-slate-900 my-auto">
             
             {/* Inner scroll container — equal py-5 top & bottom */}
             <div className="w-full h-full py-5 px-6 sm:px-7 flex flex-col justify-between overflow-y-auto thin-scroll">
@@ -599,22 +600,22 @@ export default function Login() {
                     </button>
                   </div>
                 ) : (
-                  <div className="py-1 px-2.5 bg-emerald-50 border border-emerald-200/60 rounded-xl text-center">
-                    <span className="text-[10px] font-semibold text-emerald-800">
+                  <div className="py-1 px-2.5 bg-emerald-100/80 rounded-xl text-center shadow-2xs">
+                    <span className="text-[10px] font-semibold text-emerald-900">
                       Merchant Onboarding Desk · Staff accounts are admin-provisioned
                     </span>
                   </div>
                 )}
 
                 {authMode === 'signin' && portalRole === 'merchant' && (
-                  <div className="flex justify-center gap-4 text-xs font-semibold pt-0.5">
+                  <div className="flex justify-center gap-2 text-xs font-semibold pt-1">
                     <button
                       type="button"
                       onClick={() => { setLoginMethod('password'); setError(null); }}
-                      className={`pb-0.5 transition cursor-pointer border-b-2 text-[11px] ${
+                      className={`px-3 py-1 rounded-full transition cursor-pointer text-[11px] font-bold ${
                         loginMethod === 'password'
-                          ? 'border-[#84CC16] text-slate-900 font-bold'
-                          : 'border-transparent text-slate-400 hover:text-slate-600'
+                          ? 'bg-slate-900 text-white shadow-2xs'
+                          : 'bg-slate-100 text-slate-500 hover:text-slate-900'
                       }`}
                     >
                       Email & Password
@@ -622,10 +623,10 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => { setLoginMethod('otp'); setError(null); }}
-                      className={`pb-0.5 transition cursor-pointer border-b-2 text-[11px] ${
+                      className={`px-3 py-1 rounded-full transition cursor-pointer text-[11px] font-bold ${
                         loginMethod === 'otp'
-                          ? 'border-[#84CC16] text-slate-900 font-bold'
-                          : 'border-transparent text-slate-400 hover:text-slate-600'
+                          ? 'bg-slate-900 text-white shadow-2xs'
+                          : 'bg-slate-100 text-slate-500 hover:text-slate-900'
                       }`}
                     >
                       Mobile OTP
@@ -636,8 +637,8 @@ export default function Login() {
 
               {/* Error */}
               {error && (
-                <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 shrink-0">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-rose-500" />
+                <div className="p-2 rounded-xl bg-rose-100/90 text-rose-800 text-xs flex items-start gap-2 shrink-0 shadow-2xs">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-rose-600" />
                   <span className="leading-tight font-medium text-[11px]">{error}</span>
                 </div>
               )}
@@ -654,7 +655,7 @@ export default function Login() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email address"
                       required
-                      className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
+                      className="w-full px-4 py-2.5 text-sm bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                     />
                     <div className="relative">
                       <input
@@ -663,7 +664,7 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                         required
-                        className="w-full pl-4 pr-11 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
+                        className="w-full pl-4 pr-11 py-2.5 text-sm bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                       />
                       <button
                         type="button"
@@ -679,7 +680,7 @@ export default function Login() {
                           type="checkbox"
                           checked={rememberMe}
                           onChange={(e) => setRememberMe(e.target.checked)}
-                          className="w-3.5 h-3.5 rounded text-[#84CC16] focus:ring-[#84CC16] border-slate-300"
+                          className="w-3.5 h-3.5 rounded text-[#84CC16] focus:ring-[#84CC16]"
                         />
                         <span className="text-[11px]">Remember on this device</span>
                       </label>
@@ -693,7 +694,7 @@ export default function Login() {
                       className="w-full py-2.5 sm:py-3 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] active:bg-[#65A30D] text-white text-sm font-bold tracking-wide shadow-md shadow-[#84CC16]/25 hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer mt-0.5"
                     >
                       {loading ? (
-                        <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        <Loader2 className="w-5 h-5 text-white animate-spin" />
                       ) : (
                         <span>Sign in</span>
                       )}
@@ -713,7 +714,7 @@ export default function Login() {
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                         placeholder="Phone number"
                         required
-                        className="w-full pl-13 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition"
+                        className="w-full pl-13 pr-4 py-2.5 text-sm bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                       />
                     </div>
                     {otpSent && (
@@ -724,7 +725,7 @@ export default function Login() {
                         onChange={(e) => setOtp(e.target.value)}
                         placeholder="6-Digit OTP (Demo: 123456)"
                         required
-                        className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 focus:border-[#84CC16] transition text-center tracking-widest font-mono font-bold"
+                        className="w-full px-4 py-2.5 text-sm bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition text-center tracking-widest font-mono font-bold shadow-2xs"
                       />
                     )}
                     <button
@@ -733,7 +734,7 @@ export default function Login() {
                       className="w-full py-2.5 sm:py-3 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-sm font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {loading ? (
-                        <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        <Loader2 className="w-5 h-5 text-white animate-spin" />
                       ) : (
                         <span>{!otpSent ? 'Send OTP code' : 'Verify & Sign in'}</span>
                       )}
@@ -750,7 +751,7 @@ export default function Login() {
                       onChange={(e) => setSignupName(e.target.value)}
                       placeholder="Your full name"
                       required
-                      className="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
+                      className="w-full px-4 py-2 text-xs bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                     />
                     <input
                       type="text"
@@ -758,7 +759,7 @@ export default function Login() {
                       onChange={(e) => setSignupBusiness(e.target.value)}
                       placeholder="Shop or business name"
                       required
-                      className="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
+                      className="w-full px-4 py-2 text-xs bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                     />
                     <input
                       type="email"
@@ -766,7 +767,7 @@ export default function Login() {
                       onChange={(e) => setSignupEmail(e.target.value)}
                       placeholder="Email address"
                       required
-                      className="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
+                      className="w-full px-4 py-2 text-xs bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                     />
                     <div className="grid grid-cols-2 gap-2">
                       <input
@@ -776,7 +777,7 @@ export default function Login() {
                         onChange={(e) => setSignupPhone(e.target.value.replace(/\D/g, ''))}
                         placeholder="Mobile (10 digits)"
                         required
-                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
+                        className="w-full px-3 py-2 text-xs bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                       />
                       <input
                         type="password"
@@ -784,7 +785,7 @@ export default function Login() {
                         onChange={(e) => setSignupPassword(e.target.value)}
                         placeholder="Password (6+ chars)"
                         required
-                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition"
+                        className="w-full px-3 py-2 text-xs bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#84CC16]/30 transition shadow-2xs"
                       />
                     </div>
                     <button
@@ -793,7 +794,7 @@ export default function Login() {
                       className="w-full py-2.5 rounded-2xl bg-[#84CC16] hover:bg-[#74B513] text-white text-xs font-bold tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer mt-1"
                     >
                       {loading ? (
-                        <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        <Loader2 className="w-4 h-4 text-white animate-spin" />
                       ) : (
                         <span>Create account</span>
                       )}
@@ -804,9 +805,9 @@ export default function Login() {
                 {/* Staff 2FA */}
                 {requires2FA && (
                   <form onSubmit={handleVerify2FA} className="space-y-2.5">
-                    <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-center">
-                      <p className="text-xs text-amber-800 font-semibold">Staff 2FA Verification Required</p>
-                      <p className="text-[11px] text-amber-600 mt-0.5">Use Demo 2FA Code: <span className="font-bold text-amber-900">654321</span></p>
+                    <div className="p-2.5 bg-amber-100/90 rounded-xl text-center shadow-2xs">
+                      <p className="text-xs text-amber-900 font-semibold">Staff 2FA Verification Required</p>
+                      <p className="text-[11px] text-amber-700 mt-0.5">Use Demo 2FA Code: <span className="font-bold text-amber-950">654321</span></p>
                     </div>
                     <input
                       type="text"
@@ -815,7 +816,7 @@ export default function Login() {
                       onChange={(e) => setTwoFactorCode(e.target.value)}
                       placeholder="654321"
                       required
-                      className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-bold tracking-widest text-slate-900"
+                      className="w-full px-4 py-2.5 text-sm bg-slate-100 hover:bg-slate-200/60 focus:bg-white rounded-xl text-center font-mono font-bold tracking-widest text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 shadow-2xs"
                     />
                     <button
                       type="submit"
@@ -832,7 +833,7 @@ export default function Login() {
               {/* ─── CARD FOOTER (BALANCED AT BOTTOM) ─── */}
               <div className="shrink-0 space-y-1.5 pt-0.5">
                 <div className="relative flex items-center justify-center">
-                  <div className="border-t border-slate-200 w-full" />
+                  <div className="h-px bg-slate-200/80 w-full" />
                   <span className="bg-white px-2.5 text-[9px] uppercase font-bold text-slate-400 shrink-0 tracking-wider">
                     or 1-click instant demo
                   </span>
@@ -843,11 +844,11 @@ export default function Login() {
                     type="button"
                     disabled={Boolean(quickLoading)}
                     onClick={() => handleQuickDemoLogin('merchant')}
-                    className="p-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#84CC16] hover:bg-lime-50/40 text-left transition flex items-center justify-between group cursor-pointer shadow-2xs"
+                    className="p-2 rounded-xl bg-slate-100 hover:bg-lime-100/60 text-left transition flex items-center justify-between group cursor-pointer shadow-2xs"
                     title="1-Click Login as Piyush Merchant"
                   >
                     <div className="flex items-center gap-1.5 truncate">
-                      <div className="w-6 h-6 rounded-lg bg-lime-100 text-[#65A30D] flex items-center justify-center shrink-0">
+                      <div className="w-6 h-6 rounded-lg bg-lime-100 group-hover:bg-white text-[#65A30D] flex items-center justify-center shrink-0 shadow-2xs">
                         <Store className="w-3 h-3" />
                       </div>
                       <div className="truncate">
@@ -856,7 +857,7 @@ export default function Login() {
                       </div>
                     </div>
                     {quickLoading === 'merchant' && (
-                      <div className="w-3 h-3 border-2 border-[#84CC16] border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-[#84CC16] animate-spin" />
                     )}
                   </button>
 
@@ -864,11 +865,11 @@ export default function Login() {
                     type="button"
                     disabled={Boolean(quickLoading)}
                     onClick={() => handleQuickDemoLogin('admin')}
-                    className="p-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 text-left transition flex items-center justify-between group cursor-pointer shadow-2xs"
+                    className="p-2 rounded-xl bg-slate-100 hover:bg-indigo-100/60 text-left transition flex items-center justify-between group cursor-pointer shadow-2xs"
                     title="1-Click Login as Piyush Admin"
                   >
                     <div className="flex items-center gap-1.5 truncate">
-                      <div className="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                      <div className="w-6 h-6 rounded-lg bg-indigo-100 group-hover:bg-white text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
                         <ShieldCheck className="w-3 h-3" />
                       </div>
                       <div className="truncate">
@@ -877,7 +878,7 @@ export default function Login() {
                       </div>
                     </div>
                     {quickLoading === 'admin' && (
-                      <div className="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-indigo-600 animate-spin" />
                     )}
                   </button>
                 </div>
@@ -888,7 +889,7 @@ export default function Login() {
                   <span className="font-semibold text-slate-600">Privacy Policy</span>.
                 </p>
 
-                <div className="text-center pt-1 border-t border-slate-100">
+                <div className="text-center pt-1">
                   {authMode === 'signin' ? (
                     <p className="text-xs text-slate-600 font-medium">
                       Don't have an account?{' '}

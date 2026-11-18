@@ -87,7 +87,7 @@ export default function OpsConsole() {
 
       {/* ─── FLOATING TOAST NOTIFICATION ─── */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-[#12141A] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in text-xs font-medium border border-slate-700">
+        <div className="fixed top-20 right-6 z-50 bg-[#12141A] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-fade-in text-xs font-medium">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
           <button

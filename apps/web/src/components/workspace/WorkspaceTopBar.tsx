@@ -53,7 +53,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
   }, []);
 
   return (
-    <header className="h-[72px] px-4 sm:px-6 md:px-8 border-b border-slate-200/90 bg-white flex items-center justify-between shrink-0 sticky top-0 z-30 shadow-2xs">
+    <header className="h-[72px] px-4 sm:px-6 md:px-8 bg-white flex items-center justify-between shrink-0 sticky top-0 z-30 shadow-xs">
       
       {/* ─── LEFT: BRAND + BACK BUTTON + WORKSPACE TABS (EQUIPFLOW STYLE) ─── */}
       <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar py-1">
@@ -76,12 +76,12 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
           type="button"
           onClick={() => onScopeTabChange('queue')}
           title="Back to queue"
-          className="w-8 h-8 rounded-full border border-slate-200/90 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition shrink-0 cursor-pointer shadow-2xs"
+          className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition shrink-0 cursor-pointer shadow-2xs"
         >
           <ChevronLeft className="w-4 h-4 stroke-[2]" />
         </button>
 
-        {/* Scope Pills & Active Workspace Tab (Mirrors All Sites, Riverside, TR-0411 ✕, +) */}
+        {/* Scope Pills & Active Workspace Tab (Mirrors All Sites, Riverside, TR-0411, +) */}
         <div className="flex items-center gap-2 shrink-0">
           
           {/* Tab 1: All Cases Pill */}
@@ -91,7 +91,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
               activeScopeTab === 'all'
                 ? 'bg-[#12141A] text-white shadow-xs'
-                : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
             }`}
           >
             <span>All cases</span>
@@ -104,23 +104,23 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
               activeScopeTab === 'queue'
                 ? 'bg-[#12141A] text-white shadow-xs'
-                : 'bg-[#ECEEF2] hover:bg-slate-200 text-slate-800'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
             }`}
           >
             <span>My queue</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-              activeScopeTab === 'queue' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-800'
+              activeScopeTab === 'queue' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
             }`}>
               12
             </span>
           </button>
 
-          {/* Tab 3: Active Workspace Tab (1:1 EquipFlow TR-0411 · EX-0157 ✕) */}
+          {/* Tab 3: Active Workspace Tab */}
           <div
-            className={`h-9 px-4 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+            className={`h-9 px-4 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
               activeScopeTab === 'case'
-                ? 'bg-[#F4F5F7] text-slate-900 border-slate-300/80 shadow-2xs font-semibold'
-                : 'bg-[#ECEEF2] text-slate-600 border-transparent hover:border-slate-300'
+                ? 'bg-slate-200/80 text-slate-900 shadow-2xs font-semibold'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200/60'
             }`}
             onClick={() => onScopeTabChange('case')}
           >
@@ -141,12 +141,12 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
             </button>
           </div>
 
-          {/* Round "+" Button (Right beside the open tab in EquipFlow reference) */}
+          {/* Round "+" Button */}
           <button
             type="button"
             onClick={() => onScopeTabChange('queue')}
             title="Open new case"
-            className="w-8 h-8 rounded-full bg-white border border-slate-300/80 hover:border-slate-400 hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-slate-800 transition shrink-0 cursor-pointer shadow-2xs"
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition shrink-0 cursor-pointer shadow-2xs"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2]" />
           </button>
@@ -165,9 +165,9 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search assets or IDs..."
-            className="w-48 lg:w-56 pl-10 pr-12 py-2 rounded-full bg-slate-100 hover:bg-slate-100/90 focus:bg-white border border-transparent focus:border-slate-300 text-xs text-slate-800 placeholder:text-slate-400 outline-none transition"
+            className="w-48 lg:w-56 pl-10 pr-12 py-2 rounded-full bg-slate-100 hover:bg-slate-100/90 focus:bg-white text-xs text-slate-800 placeholder:text-slate-400 outline-none transition"
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-medium text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-medium text-slate-500 bg-slate-200/80 px-1.5 py-0.5 rounded shadow-2xs">
             ⌘K
           </kbd>
         </div>
@@ -175,7 +175,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
         {/* Bell Button with count dot */}
         <button
           type="button"
-          className="w-10 h-10 rounded-full hover:bg-slate-100 border border-transparent hover:border-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer relative"
+          className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition cursor-pointer relative"
           title="Notifications"
         >
           <Bell className="w-4 h-4 stroke-[2]" />
@@ -189,7 +189,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
           <button
             type="button"
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-full hover:bg-slate-100 border border-transparent hover:border-slate-200 transition cursor-pointer"
+            className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-full hover:bg-slate-100 transition cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-900 to-slate-700 text-white font-bold text-xs flex items-center justify-center shadow-xs">
               {currentRole === 'ops_agent' ? 'VS' : currentRole === 'ops_manager' ? 'NG' : 'PA'}
@@ -207,8 +207,8 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
 
           {/* Profile & Persona Switcher Popover */}
           {showProfileMenu && (
-            <div className="absolute right-0 top-12 w-64 bg-white rounded-2xl border border-slate-200 shadow-xl p-3 z-50 text-xs animate-fade-in">
-              <div className="px-3 py-2 border-b border-slate-100">
+            <div className="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl p-3 z-50 text-xs animate-fade-in">
+              <div className="px-3 py-2">
                 <p className="font-bold text-slate-900">
                   {currentRole === 'ops_agent' ? 'Vikram Singh' : currentRole === 'ops_manager' ? 'Neha Gupta' : 'Piyush (Admin)'}
                 </p>
@@ -226,7 +226,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
                     setShowProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between font-semibold transition cursor-pointer ${
-                    currentRole === 'ops_agent' ? 'bg-blue-50 text-blue-700' : 'hover:bg-slate-50 text-slate-700'
+                    currentRole === 'ops_agent' ? 'bg-blue-100 text-blue-800' : 'hover:bg-slate-100 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
                     setShowProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between font-semibold transition cursor-pointer ${
-                    currentRole === 'ops_manager' ? 'bg-purple-50 text-purple-700' : 'hover:bg-slate-50 text-slate-700'
+                    currentRole === 'ops_manager' ? 'bg-purple-100 text-purple-800' : 'hover:bg-slate-100 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -260,7 +260,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
                     setShowProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between font-semibold transition cursor-pointer ${
-                    currentRole === 'admin' ? 'bg-orange-50 text-orange-700' : 'hover:bg-slate-50 text-slate-700'
+                    currentRole === 'admin' ? 'bg-orange-100 text-orange-800' : 'hover:bg-slate-100 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -271,7 +271,7 @@ export const WorkspaceTopBar: React.FC<WorkspaceTopBarProps> = ({
                 </button>
               </div>
 
-              <div className="pt-2 border-t border-slate-100">
+              <div className="pt-2">
                 <a
                   href="/login"
                   className="w-full text-left px-3 py-1.5 rounded-xl text-red-600 hover:bg-red-50 font-semibold flex items-center gap-2 transition"

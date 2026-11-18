@@ -51,7 +51,7 @@ export const Meter: React.FC<MeterProps> = ({
       </div>
 
       {/* Signature EquipFlow Meter Bar */}
-      <div className="relative w-full h-[18px] rounded-full overflow-hidden bg-hatched border border-slate-200/90 shadow-inner flex items-center">
+      <div className="relative w-full h-[18px] rounded-full overflow-hidden bg-hatched shadow-inner flex items-center">
         {/* Filled Gradient Bar */}
         <div
           className={`h-full ${gradientClass} transition-all duration-500 ease-out`}

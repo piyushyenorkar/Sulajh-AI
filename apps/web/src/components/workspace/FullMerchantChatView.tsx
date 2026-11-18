@@ -68,16 +68,16 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[24px] border border-slate-200/90 shadow-sm flex flex-col h-[750px] overflow-hidden">
+    <div className="bg-white rounded-[24px] shadow-sm flex flex-col h-[750px] overflow-hidden">
       
       {/* ─── TOP CHAT HEADER ─── */}
-      <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between shrink-0">
+      <div className="px-6 py-4 bg-slate-100/70 shadow-2xs flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           {onBackToOverview && (
             <button
               type="button"
               onClick={onBackToOverview}
-              className="w-8 h-8 rounded-full border border-slate-200 hover:bg-white flex items-center justify-center text-slate-600 transition cursor-pointer"
+              className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer shadow-2xs"
               title="Back to Overview"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -116,7 +116,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
             </span>
           </div>
 
-          <div className="px-3 py-1.5 rounded-xl bg-violet-50 border border-violet-200/60 text-xs font-semibold text-[#6D5BD0] flex items-center gap-1.5">
+          <div className="px-3 py-1.5 rounded-xl bg-violet-100 text-xs font-semibold text-violet-800 flex items-center gap-1.5 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Automated Stream</span>
           </div>
@@ -128,7 +128,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
         
         {/* Timeline Start Marker */}
         <div className="flex items-center justify-center my-2">
-          <span className="px-3.5 py-1 rounded-full bg-white border border-slate-200 text-slate-500 text-[11px] font-semibold shadow-2xs">
+          <span className="px-3.5 py-1 rounded-full bg-slate-200/80 text-slate-700 text-[11px] font-semibold shadow-2xs">
             Today • Ticket {ticket.ticketNumber} Opened at {ticket.openedAt}
           </span>
         </div>
@@ -159,18 +159,18 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
               </div>
 
               {/* Message Bubble Card */}
-              <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-2xs ${
+              <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-xs ${
                 isMerchant
-                  ? 'bg-white border border-slate-200 text-slate-800 rounded-tl-xs'
+                  ? 'bg-white text-slate-800 rounded-tl-xs'
                   : isAi
-                  ? 'bg-gradient-to-br from-violet-50/90 to-purple-50/50 border border-violet-200/80 text-slate-800 rounded-tr-xs'
+                  ? 'bg-gradient-to-br from-violet-100/90 to-purple-100/60 text-slate-900 rounded-tr-xs'
                   : 'bg-[#12141A] text-white rounded-tr-xs shadow-sm'
               }`}>
                 
                 {/* Voice Audio Note Player (If audio message) */}
                 {msg.voiceDuration && (
-                  <div className={`mb-3 p-2.5 rounded-xl border flex items-center justify-between gap-3 ${
-                    isMerchant ? 'bg-slate-50 border-slate-200' : 'bg-white/10 border-white/20'
+                  <div className={`mb-3 p-2.5 rounded-xl flex items-center justify-between gap-3 ${
+                    isMerchant ? 'bg-slate-100' : 'bg-white/10'
                   }`}>
                     <div className="flex items-center gap-2.5">
                       <button
@@ -218,7 +218,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
 
                 {/* File Attachment Chip (e.g. Courier POD or Invoice) */}
                 {msg.attachment && (
-                  <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                  <div className="mt-3 p-3 rounded-xl bg-slate-100/90 flex items-center justify-between gap-3 shadow-2xs">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                         <FileText className="w-4 h-4" />
@@ -235,7 +235,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
 
                     <button
                       type="button"
-                      className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                      className="px-2.5 py-1 rounded-lg bg-white text-slate-700 hover:bg-slate-200 text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-2xs"
                     >
                       <Download className="w-3 h-3" />
                       <span>View</span>
@@ -245,7 +245,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
 
                 {/* AI Proof Trail Expandable Strip (If AI response) */}
                 {msg.proofTrail && (
-                  <div className="mt-2.5 pt-2 border-t border-violet-200/60">
+                  <div className="mt-2.5 pt-2">
                     <button
                       type="button"
                       onClick={() => setExpandedProofId(expandedProofId === msg.id ? null : msg.id)}
@@ -257,7 +257,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
                     </button>
 
                     {expandedProofId === msg.id && (
-                      <div className="mt-2 p-2.5 rounded-xl bg-white/90 border border-violet-200 text-[11px] space-y-1 font-mono text-slate-700 animate-slide-down">
+                      <div className="mt-2 p-2.5 rounded-xl bg-white/95 text-[11px] space-y-1 font-mono text-slate-700 animate-slide-down shadow-xs">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Tool Executed:</span>
                           <span className="font-bold text-[#6D5BD0]">{msg.proofTrail.toolName}()</span>
@@ -285,7 +285,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
       </div>
 
       {/* ─── BOTTOM STAFF COMPOSER & QUICK REPLIES ─── */}
-      <div className="p-4 border-t border-slate-200 bg-white shrink-0 space-y-3">
+      <div className="p-4 bg-white shrink-0 space-y-3 shadow-lg">
         
         {/* Quick Suggested Replies Strip */}
         {showQuickPills && (
@@ -309,7 +309,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
                   key={idx}
                   type="button"
                   onClick={() => setInputText(qr)}
-                  className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200/60 text-xs font-semibold text-slate-700 text-left truncate max-w-[280px] shrink-0 transition cursor-pointer shadow-2xs"
+                  className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 text-left truncate max-w-[280px] shrink-0 transition cursor-pointer shadow-2xs"
                 >
                   {qr}
                 </button>
@@ -325,7 +325,7 @@ export const FullMerchantChatView: React.FC<FullMerchantChatViewProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type message to merchant (dispatches to WhatsApp & Soundbox)..."
-            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 focus:bg-white border border-transparent focus:border-slate-300 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 outline-none transition"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 focus:bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 outline-none transition shadow-2xs"
           />
 
           <button

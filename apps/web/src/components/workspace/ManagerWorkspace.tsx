@@ -78,12 +78,12 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeFilter === 'all'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>Needs manager decision</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeFilter === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeFilter === 'all' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 8
               </span>
@@ -94,12 +94,12 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeFilter === 'high_value'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>High value (&gt; ₹25k)</span>
               <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                activeFilter === 'high_value' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                activeFilter === 'high_value' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
               }`}>
                 5
               </span>
@@ -110,7 +110,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 activeFilter === 'outages'
                   ? 'bg-[#12141A] text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
               <span>Bank outages</span>
@@ -155,7 +155,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
       </div>
 
       {/* ─── ACTIVE BANK INCIDENT ALERT STRIP (M-3 PREVIEW) ─── */}
-      <div className="bg-gradient-to-r from-red-50 via-rose-50 to-orange-50 rounded-[24px] border border-red-200/90 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-red-50 via-rose-50 to-orange-50 rounded-[24px] p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-3.5">
           <div className="w-10 h-10 rounded-2xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
             <AlertOctagon className="w-5 h-5 stroke-[2.2]" />
@@ -180,7 +180,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
           <button
             type="button"
             onClick={() => setShowBulkRetrySheet(true)}
-            className="px-4 py-2.5 rounded-full bg-white border border-red-300 text-red-700 hover:bg-red-50 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="px-4 py-2.5 rounded-full bg-white text-red-700 hover:bg-red-50 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <span>Review & Retry 142 Payouts</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -192,10 +192,10 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Left Column (7 cols): High-Value Escalation Table */}
-        <div className="lg:col-span-7 bg-white rounded-[24px] border border-slate-200/90 p-5 sm:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+        <div className="lg:col-span-7 bg-white rounded-[24px] p-5 sm:p-6 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-orange-50 text-[#F2531D] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-orange-100 text-[#F2531D] flex items-center justify-center">
                 <ShieldAlert className="w-4 h-4 stroke-[2.2]" />
               </div>
               <div>
@@ -205,7 +205,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
                 <span className="text-[11px] text-slate-400">Requires 4-Eye Approval & Manager TOTP</span>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+            <span className="px-3 py-1 rounded-full bg-slate-100/80 text-slate-700 text-xs font-semibold">
               {escalatedTickets.length} cases held
             </span>
           </div>
@@ -255,10 +255,10 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
         <div className="lg:col-span-5 flex flex-col gap-6">
           
           {/* Card: Live Bank Health */}
-          <div className="bg-white rounded-[24px] border border-slate-200/90 p-5 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+          <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-xs">
+            <div className="flex items-center justify-between mb-4 pb-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                   <Building2 className="w-4 h-4 stroke-[2.2]" />
                 </div>
                 <div>
@@ -271,18 +271,18 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200/60 flex items-center justify-between">
+              <div className="p-3.5 rounded-xl bg-red-100/80 shadow-2xs flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5 font-bold text-xs text-red-900">
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                     <span>HDFC Bank (IMPS Rail)</span>
                   </div>
-                  <span className="text-[11px] text-red-700">142 payouts held (IFSC code migration)</span>
+                  <span className="text-[11px] text-red-800">142 payouts held (IFSC code migration)</span>
                 </div>
-                <span className="text-xs font-mono font-bold text-red-800">82.4% success</span>
+                <span className="text-xs font-mono font-bold text-red-900">82.4% success</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <div className="p-3.5 rounded-xl bg-slate-100/80 shadow-2xs flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -293,7 +293,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
                 <span className="text-xs font-mono font-bold text-emerald-600">99.8% success</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <div className="p-3.5 rounded-xl bg-slate-100/80 shadow-2xs flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -307,8 +307,8 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
           </div>
 
           {/* Card: Team Telemetry & Deflection */}
-          <div className="bg-white rounded-[24px] border border-slate-200/90 p-5 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+          <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-xs">
+            <div className="flex items-center justify-between mb-4 pb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
                   <Users className="w-4 h-4 stroke-[2.2]" />
@@ -323,7 +323,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs py-2 border-b border-slate-100">
+              <div className="flex items-center justify-between text-xs py-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-800 font-bold text-[10px] flex items-center justify-center">
                     PS
@@ -336,7 +336,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs py-2 border-b border-slate-100">
+              <div className="flex items-center justify-between text-xs py-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-800 font-bold text-[10px] flex items-center justify-center">
                     RV
@@ -371,10 +371,10 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
       {/* ─── M-3 BULK RETRY PREVIEW MODAL / SHEET ─── */}
       {showBulkRetrySheet && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-[28px] border border-slate-200 p-6 sm:p-8 max-w-2xl w-full shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="bg-white rounded-[28px] p-6 sm:p-8 max-w-2xl w-full shadow-2xl">
+            <div className="flex items-center justify-between pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-50 text-[#F2531D] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-orange-100 text-[#F2531D] flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 stroke-[2.2]" />
                 </div>
                 <div>
@@ -401,13 +401,13 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
 
             {batchRetryStep === 'preview' && (
               <div className="py-4 space-y-4">
-                <div className="p-3.5 bg-blue-50/70 border border-blue-200/60 rounded-xl text-xs text-blue-900">
+                <div className="p-3.5 bg-blue-100/80 rounded-xl text-xs text-blue-900 shadow-2xs">
                   <strong>Safe Batch Action:</strong> Sulajh AI has verified all 142 recipient account numbers against the new IFSC <code>HDFC0000482</code>. Executing will dispatch all 142 IMPS payouts in parallel.
                 </div>
 
                 <div className="text-xs font-bold text-slate-700">Sample of 5 affected merchants:</div>
-                <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100 text-xs">
-                  <div className="bg-slate-50 px-3 py-2 grid grid-cols-4 font-semibold text-slate-600">
+                <div className="bg-slate-100/70 rounded-xl overflow-hidden divide-y divide-slate-200/60 text-xs shadow-2xs">
+                  <div className="bg-slate-200/80 px-3 py-2 grid grid-cols-4 font-semibold text-slate-700">
                     <span>Merchant</span>
                     <span>Hold Amount</span>
                     <span>Old IFSC</span>
@@ -449,7 +449,7 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowBulkRetrySheet(false)}
-                    className="px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 cursor-pointer"
+                    className="px-5 py-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -458,8 +458,8 @@ export const ManagerWorkspace: React.FC<ManagerWorkspaceProps> = ({
                     onClick={startBatchExecution}
                     className="px-6 py-2.5 rounded-full bg-[#F2531D] hover:bg-[#E04612] text-white text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Execute Batch Retry (142 Settlements)</span>
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                    <span>Authorize & Execute 142 Payouts</span>
                   </button>
                 </div>
               </div>
