@@ -42,6 +42,11 @@ chatRouter.post('/', requireAuth, requireRole('merchant'), async (req: Request, 
     }
   }
 
+  if (!targetCaseId) {
+    res.status(500).json({ error: { message: 'Failed to assign or locate target case', code: 'CASE_CREATION_FAILED' } });
+    return;
+  }
+
   const caseObj = db.getCaseById(targetCaseId);
   if (!caseObj || caseObj.merchant_id !== merchantId) {
     res.status(403).json({ error: { message: 'Case not found or unauthorized', code: 'FORBIDDEN' } });

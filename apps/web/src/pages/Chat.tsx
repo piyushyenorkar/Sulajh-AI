@@ -30,9 +30,14 @@ import {
   FileText,
   CheckCircle2,
   HelpCircle,
-  RefreshCw
+  RefreshCw,
+  Volume2,
+  VolumeX,
+  Square,
+  Radio,
 } from 'lucide-react';
 import { api } from '../lib/api';
+import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
 import { MERCHANT_INFO } from '../data/merchantDashboardData';
 
 interface MessageItem {
@@ -168,7 +173,30 @@ export default function Chat() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const [language, setLanguage] = useState<'en' | 'hinglish' | 'hi'>('en');
-  const [isRecording, setIsRecording] = useState(false);
+  
+  // Real Voice STT & Recorder Hook (Gnani AI)
+  const {
+    isRecording,
+    durationSec,
+    error: micError,
+    startRecording,
+    stopRecording,
+    cancelRecording,
+  } = useVoiceRecorder();
+
+  const [voiceProcessing, setVoiceProcessing] = useState(false);
+  const [voiceReview, setVoiceReview] = useState<{
+    transcript: string;
+    needsConfirm: boolean;
+    detectedLanguage?: string;
+    provider?: string;
+  } | null>(null);
+
+  // Audio Playback State for TTS (Gnani Timbre)
+  const [playingMsgId, setPlayingMsgId] = useState<string | null>(null);
+  const [ttsLoadingId, setTtsLoadingId] = useState<string | null>(null);
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+
   const [showSuggestions, setShowSuggestions] = useState(false); // Collapsed by default for max chat room
   const [showPolicyInfo, setShowPolicyInfo] = useState(false);
 
@@ -389,22 +417,99 @@ export default function Chat() {
     }
   };
 
-  const handleSimulateVoice = async () => {
-    setIsRecording(true);
+  // ─── REAL VOICE STT (RECORD & TRANSCRIBE VIA GNANI AI) ────────────────────
+  const handleToggleVoice = async () => {
+    if (isRecording) {
+      setVoiceProcessing(true);
+      try {
+        const recorded = await stopRecording();
+        if (!recorded || !recorded.base64) {
+          setVoiceProcessing(false);
+          return;
+        }
+
+        const sttRes = await api.transcribeVoice(recorded.base64, recorded.mimeType, language);
+        if (sttRes && sttRes.transcript) {
+          if (sttRes.needs_amount_confirmation) {
+            // Mandated step: amount or financial action detected, review before send
+            setVoiceReview({
+              transcript: sttRes.transcript,
+              needsConfirm: true,
+              detectedLanguage: sttRes.detected_language,
+              provider: sttRes.provider,
+            });
+            setInputText(sttRes.transcript);
+          } else {
+            // Instant query placement
+            setInputText(sttRes.transcript);
+            handleSendMessage(sttRes.transcript);
+          }
+        }
+      } catch (err: any) {
+        console.error('Voice transcription error:', err);
+        alert(err.message || 'Could not transcribe voice. Please try again.');
+      } finally {
+        setVoiceProcessing(false);
+      }
+    } else {
+      setVoiceReview(null);
+      const started = await startRecording();
+      if (!started && micError) {
+        alert(micError);
+      }
+    }
+  };
+
+  // ─── REAL VOICE TTS (PLAY ASSISTANT REPLY VIA GNANI VOICE) ────────────────
+  const handlePlaySpeech = async (msgId: string, text: string) => {
+    if (playingMsgId === msgId) {
+      if (activeAudioRef.current) {
+        activeAudioRef.current.pause();
+        activeAudioRef.current = null;
+      }
+      setPlayingMsgId(null);
+      return;
+    }
+
+    if (activeAudioRef.current) {
+      activeAudioRef.current.pause();
+      activeAudioRef.current = null;
+    }
+
+    setTtsLoadingId(msgId);
     try {
-      const res = await api.transcribeVoice('delayed');
-      setTimeout(() => {
-        setIsRecording(false);
-        const textToSubmit =
-          language === 'hi'
-            ? 'मेरा कल का सेटलमेंट अभी तक नहीं आया, कितना समय लगेगा?'
-            : language === 'en'
-            ? 'When will my yesterday payout arrive?'
-            : res.transcript || 'Mera kal ka settlement abhi tak nahi aaya, kitna time lagega?';
-        handleSendMessage(textToSubmit);
-      }, 1200);
-    } catch {
-      setIsRecording(false);
+      // Clean plain text summary for natural speech
+      const plainText = text
+        .replace(/\|[^\n]+\|/g, '')
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/[#*_~>`]/g, '')
+        .trim();
+
+      const audioUrl = api.getVoiceSpeakUrl(plainText.slice(0, 400), language);
+      const audio = new Audio(audioUrl);
+      activeAudioRef.current = audio;
+
+      audio.onplay = () => {
+        setTtsLoadingId(null);
+        setPlayingMsgId(msgId);
+      };
+
+      audio.onended = () => {
+        setPlayingMsgId(null);
+        activeAudioRef.current = null;
+      };
+
+      audio.onerror = () => {
+        setTtsLoadingId(null);
+        setPlayingMsgId(null);
+        activeAudioRef.current = null;
+      };
+
+      await audio.play();
+    } catch (err) {
+      console.error('TTS playback error:', err);
+      setTtsLoadingId(null);
+      setPlayingMsgId(null);
     }
   };
 
@@ -804,6 +909,27 @@ export default function Chat() {
                       <Receipt className="w-3 h-3" />
                       <span>View Deductions Hisaab</span>
                     </button>
+
+                    {/* Gnani Voice Listen / Play Button */}
+                    <button
+                      type="button"
+                      onClick={() => handlePlaySpeech(msg.id, msg.text)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-[11px] transition cursor-pointer ${
+                        playingMsgId === msg.id
+                          ? 'bg-amber-100 text-amber-900 ring-1 ring-amber-400 animate-pulse'
+                          : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800'
+                      }`}
+                      title="Listen to spoken response via Gnani AI Voice"
+                    >
+                      {ttsLoadingId === msg.id ? (
+                        <RefreshCw className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
+                      ) : playingMsgId === msg.id ? (
+                        <VolumeX className="w-3.5 h-3.5 text-amber-800" />
+                      ) : (
+                        <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
+                      )}
+                      <span>{playingMsgId === msg.id ? 'Stop Voice' : 'Listen'}</span>
+                    </button>
                   </div>
 
                   {/* Bottom Right Timestamp */}
@@ -889,6 +1015,53 @@ export default function Chat() {
             </div>
           )}
 
+          {/* Explicit Voice Amount Confirmation Banner (Spec A2 #7 & Chunk 6) */}
+          {voiceReview && (
+            <div className="bg-amber-50 border border-amber-250 rounded-2xl p-2.5 sm:p-3 flex items-start justify-between gap-3 animate-fade-in shadow-xs text-xs">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-bold text-amber-900 flex items-center gap-1.5">
+                    <span>Amount/Action Detected in Speech</span>
+                    <span className="px-1.5 py-0.5 bg-amber-200/80 text-[10px] rounded text-amber-900 font-mono font-bold">
+                      {voiceReview.provider === 'gnani' ? 'Gnani STT' : 'Sarvam STT'}
+                    </span>
+                  </div>
+                  <p className="text-amber-800 mt-0.5 font-medium text-xs">"{voiceReview.transcript}"</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const toSend = voiceReview.transcript;
+                    setVoiceReview(null);
+                    handleSendMessage(toSend);
+                  }}
+                  className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-full text-[11px] transition cursor-pointer"
+                >
+                  Verify & Send
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVoiceReview(null)}
+                  className="p-1 rounded-full hover:bg-amber-200/60 text-amber-700 cursor-pointer"
+                  title="Edit in input below"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Voice Processing Banner */}
+          {voiceProcessing && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 rounded-full px-3 py-1.5 flex items-center gap-2 text-xs font-medium animate-pulse">
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600" />
+              <span>Transcribing voice via Gnani AI (Vachana Speech Engine)...</span>
+            </div>
+          )}
+
           {/* Input Bar Form */}
           <form
             onSubmit={(e) => {
@@ -899,20 +1072,39 @@ export default function Chat() {
           >
             <div className="flex-1 bg-slate-50 hover:bg-white focus-within:bg-white border border-slate-200/80 focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-blue-500/10 rounded-full px-3 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 shadow-xs transition">
               
-              {/* Sarvam AI Mic Record Button */}
-              <button
-                type="button"
-                onClick={handleSimulateVoice}
-                disabled={loading}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 ${
-                  isRecording
-                    ? 'bg-rose-500 text-white animate-pulse shadow-md shadow-rose-500/30'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70'
-                }`}
-                title="Voice Input (Dictate in English, Hinglish, or Hindi)"
-              >
-                {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-              </button>
+              {/* Real Gnani AI Mic Record Button */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleToggleVoice}
+                  disabled={loading || voiceProcessing}
+                  className={`h-8 rounded-full px-2.5 flex items-center gap-1.5 transition cursor-pointer text-xs font-bold ${
+                    isRecording
+                      ? 'bg-rose-500 text-white animate-pulse shadow-md shadow-rose-500/30'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/70'
+                  }`}
+                  title={isRecording ? 'Click to stop and transcribe' : 'Click to speak in Hindi, Marathi, or English (Gnani STT)'}
+                >
+                  {isRecording ? <Square className="w-3.5 h-3.5 fill-current" /> : <Mic className="w-4 h-4 text-blue-600" />}
+                  {isRecording && (
+                    <span className="font-mono text-[11px]">
+                      00:{durationSec < 10 ? `0${durationSec}` : durationSec}
+                    </span>
+                  )}
+                </button>
+
+                {/* Cancel recording button */}
+                {isRecording && (
+                  <button
+                    type="button"
+                    onClick={cancelRecording}
+                    className="w-6 h-6 rounded-full hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer"
+                    title="Cancel recording"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
 
               {/* Input Field */}
               <input
@@ -920,13 +1112,17 @@ export default function Chat() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={
-                  language === 'hi'
+                  isRecording
+                    ? 'Listening... Speak in Hindi, Marathi, or English...'
+                    : voiceProcessing
+                    ? 'Transcribing audio with Gnani Speech AI...'
+                    : language === 'hi'
                     ? 'पेआउट देरी, कटौती हिसाब या विवाद के बारे में पूछें...'
                     : language === 'hinglish'
                     ? 'Hinglish ya Hindi mein poochhein (e.g. mera hisaab samjhao)...'
                     : 'Ask about payout delays, deductions hisaab, or disputes...'
                 }
-                disabled={loading}
+                disabled={loading || isRecording}
                 className="flex-1 bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 outline-none"
               />
             </div>
@@ -934,7 +1130,7 @@ export default function Chat() {
             {/* Send Button (Black Pill) */}
             <button
               type="submit"
-              disabled={!inputText.trim() || loading}
+              disabled={!inputText.trim() || loading || isRecording || voiceProcessing}
               className="bg-slate-950 hover:bg-slate-800 disabled:opacity-40 text-white font-bold text-xs px-5 py-2.5 sm:py-3 rounded-full transition cursor-pointer flex items-center gap-1.5 shadow-sm shrink-0"
             >
               <span>Send</span>

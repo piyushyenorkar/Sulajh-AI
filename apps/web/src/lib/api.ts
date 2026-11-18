@@ -398,7 +398,7 @@ class ApiClient {
     };
   }
 
-  public async transcribeVoice(samplePhrase?: string) {
+  public async transcribeVoice(audioBase64: string, mimeType = 'audio/wav', languageHint?: string) {
     try {
       const res = await fetch(`${API_BASE}/voice/transcribe`, {
         method: 'POST',
@@ -406,19 +406,49 @@ class ApiClient {
           'Content-Type': 'application/json',
           ...this.getAuthHeader(),
         },
-        body: JSON.stringify({ sample_phrase: samplePhrase }),
+        body: JSON.stringify({
+          audio_base64: audioBase64,
+          audio_mime: mimeType,
+          language_hint: languageHint,
+        }),
       });
-      if (res.ok) {
-        return res.json();
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        return data;
       }
-    } catch {
-      // offline fallback
+      throw new Error(data.details || data.error || 'Failed to transcribe audio');
+    } catch (err: any) {
+      console.warn('Voice transcription error:', err);
+      throw err;
     }
-    return {
-      ok: true,
-      transcript: 'Mera kal ka settlement abhi tak nahi aaya, kitna time lagega?',
-      detected_language: 'hinglish',
-    };
+  }
+
+  public async synthesizeVoice(text: string, language?: string, voice?: string) {
+    try {
+      const res = await fetch(`${API_BASE}/voice/synthesize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeader(),
+        },
+        body: JSON.stringify({ text, language, voice }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        return data;
+      }
+      throw new Error(data.error || 'Failed to synthesize speech');
+    } catch (err: any) {
+      console.warn('Voice synthesis error:', err);
+      throw err;
+    }
+  }
+
+  public getVoiceSpeakUrl(text: string, language?: string, voice?: string): string {
+    const params = new URLSearchParams({ text });
+    if (language) params.set('lang', language);
+    if (voice) params.set('voice', voice);
+    return `${API_BASE}/voice/speak?${params.toString()}`;
   }
 
   // ─── SETTLEMENTS ───────────────────────────────────────────────────────────
